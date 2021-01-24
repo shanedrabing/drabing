@@ -1,11 +1,6 @@
 (function () {
     var squareRotation = 0.0;
 
-    const canvas = document.querySelector('#glCanvas');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    var gl = canvas.getContext('webgl');
-
     // resize the canvas to fill browser window dynamically
     window.addEventListener('resize', main, false);
     main();
