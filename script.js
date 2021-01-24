@@ -1,6 +1,6 @@
 var squareRotation = 0.0;
 
-main();
+window.onload = main;
 
 function main() {
     const canvas = document.querySelector('#glCanvas');
