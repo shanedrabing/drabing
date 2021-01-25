@@ -32,6 +32,7 @@ function main() {
         }
     `;
 
+    // fragment shader program
     const fsSource = `
         varying lowp vec4 vColor;
     
