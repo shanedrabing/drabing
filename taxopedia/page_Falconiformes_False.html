@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8'>
+</meta>
+<style>
+/* Credits */
+
+/* Ilya Pestov: Original, https://codepen.io/Pestov/pen/BLpgm */
+/* Paul Smirnov: Horizontal, https://codepen.io/paulsmirnov/pen/dyyOLwa */
+/* Background pattern, https://projects.verou.me/css3patterns/ */
+/* Shane Drabing: Changed styling, added image hover effects */
+
+/* Variables */
+
+:root {
+    --border-radius: 3px;
+    --border-width: 2px;
+    --border-padding: 10px;
+    --transition-speed: 0.5s;
+    --bg-color1: hsl(210, 10%, 50%);
+    --bg-color2: hsl(210, 10%, 52%);
+    --box-color: hsl(0, 0%, 75%);
+    --border-color: hsl(0, 0%, 75%);
+    --text-color: hsl(0, 0%, 25%);
+    --box-color-hover: hsl(0, 0%, 100%);
+    --border-color-hover: hsl(0, 0%, 100%);
+    --text-color-hover: hsl(0, 0%, 0%);
+}
+
+/* Now the CSS */
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background:
+    radial-gradient(circle at 40px 20px, transparent 10px, var(--bg-color1) 10px, var(--bg-color1), 20px, transparent 20px, transparent) 0px 0px,
+    radial-gradient(circle at 0px 20px, transparent 10px, var(--bg-color1) 10px, var(--bg-color1), 20px, transparent 20px, transparent) 0px 30px;
+    background-color: var(--bg-color2);
+    background-size: 40px 60px;
+}
+
+.tree {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    padding-top: 50px;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-bottom: 250px;
+}
+
+.tree ul {
+    padding-left: var(--border-padding);
+    position: relative;
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+
+.tree li {
+    text-align: center;
+    list-style-type: none;
+    position: relative;
+    padding: var(--border-radius) 0 var(--border-radius) var(--border-padding);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+}
+
+/* We will use ::before and ::after to draw the connectors */
+
+.tree li::before, .tree li::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 50%;
+    border-left: var(--border-width) solid var(--border-color);
+    width: var(--border-padding);
+    height: 50%;
+}
+
+.tree li::after {
+    bottom: auto;
+    top: 50%;
+    border-top: var(--border-width) solid var(--border-color);
+}
+
+/* We need to remove left-right connectors from elements without 
+any siblings */
+
+.tree li:only-child::after, .tree li:only-child::before {
+    display: none;
+}
+
+/* Remove space from the top of single children */
+
+.tree li:only-child {
+    padding-left: 0;
+}
+
+/* Remove left connector from first child and 
+right connector from last child */
+
+.tree li:first-child::before, .tree li:last-child::after {
+    border: 0 none;
+}
+
+/* Adding back the vertical connector to the last nodes */
+
+.tree li:last-child::before {
+    border-bottom: var(--border-width) solid var(--border-color);
+    border-radius: 0 0 var(--border-radius) 0;
+    -webkit-border-radius: 0 0 var(--border-radius) 0;
+    -moz-border-radius: 0 0 var(--border-radius) 0;
+}
+
+.tree li:first-child::after {
+    border-radius: 0 0 0 var(--border-radius);
+    -webkit-border-radius: 0 0 0 var(--border-radius);
+    -moz-border-radius: 0 0 0 var(--border-radius);
+}
+
+/* Time to add downward connectors from parents */
+
+.tree ul ul::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    border-top: var(--border-width) solid var(--border-color);
+    width: var(--border-padding);
+    height: 0;
+}
+
+/* Box styles */
+
+.tree li div {
+    cursor: pointer;
+    border: var(--border-width) solid var(--border-color);
+    padding: 4px 8px;
+    text-decoration: none;
+    color: var(--text-color);
+    background-color: var(--box-color);
+    font-family: arial, verdana, tahoma;
+    font-size: 12px;
+    display: flex-end;
+    -ms-flex-item-align: center;
+    -ms-grid-row-align: center;
+    align-self: center;
+    border-radius: var(--border-radius);
+    -webkit-border-radius: var(--border-radius);
+    -moz-border-radius: var(--border-radius);
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+}
+
+/* Time for some hover effects */
+
+/* We will apply the hover effect the the lineage of the element also */
+
+.tree li div:hover, .tree li div:hover+ul li div {
+    background: var(--box-color-hover);
+    color: var(--text-color-hover);
+    border: var(--border-width) solid var(--border-color-hover);
+}
+
+/* Connector styles on hover */
+
+.tree li div:hover+ul li::after, .tree li div:hover+ul li::before, .tree li div:hover+ul::before, .tree li div:hover+ul ul::before {
+    border-color: var(--border-color-hover);
+}
+
+/* Image hover effects */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+    transition: all 0.75s;
+    -webkit-transition: all 0.75s;
+    -moz-transition: all 0.75s;
+    transition-timing-function: ease-out;
+    transition-delay: 75ms;
+
+    width: auto;
+    height: auto;
+    max-width: 0px;
+    max-height: 0px;
+    display: block;
+    visibility: hidden;
+}
+
+div.parent:hover img {
+    transition: all 0.5s;
+    transition-delay: 15ms;
+    max-width: 75vw;
+    max-height: 50vh;
+    visibility: visible;
+}
+</style>
+</head>
+<body>
+<div class='tree'>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Falconiformes
+</i>
+ <small>
+(Falcons and caracaras)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Falconiformes' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Peregrine_falcon_%28Australia%29.JPG/220px-Peregrine_falcon_%28Australia%29.JPG'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Genus
+</b>
+ <i>
+† Masillaraptor
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+† M. parvunguis
+</i>
+ <small>
+(Masillaraptor)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Masillaraptor' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Masillaraptor_restoration.jpeg/640px-Masillaraptor_restoration.jpeg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Falconidae
+</i>
+ <small>
+(Falcons and caracaras)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Falconidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Brown-Falcon%2C-Vic%2C-3.1.2008.jpg/400px-Brown-Falcon%2C-Vic%2C-3.1.2008.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Phalcoboenus
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Phalcoboenus' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Phalcoboenus_megalopterus_near_Macchu_Picchu.jpg/640px-Phalcoboenus_megalopterus_near_Macchu_Picchu.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+P. australis
+</i>
+ <small>
+(Striated caracara)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Striated_caracara' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Striated_Caracara_on_Saunders_Island_%285551648335%29.jpg/480px-Striated_Caracara_on_Saunders_Island_%285551648335%29.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+P. carunculatus
+</i>
+ <small>
+(Carunculated caracara)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Carunculated_caracara' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Ecuador_0698b_Carunculated_Caracara.jpg/640px-Ecuador_0698b_Carunculated_Caracara.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+P. megalopterus
+</i>
+ <small>
+(Mountain caracara)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Mountain_caracara' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Phalcoboenus_megalopterus_in_Cordillera_Real%2C_Bolivia_03.jpg/634px-Phalcoboenus_megalopterus_in_Cordillera_Real%2C_Bolivia_03.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Genus
+</b>
+ <i>
+Daptrius
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+D. ater
+</i>
+ <small>
+(Black caracara)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Daptrius' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Black_Caracara_-_Chupacacao_Negro_%28Daptrius_ater%29_%2814909975447%29_%28cropped%29.jpg/403px-Black_Caracara_-_Chupacacao_Negro_%28Daptrius_ater%29_%2814909975447%29_%28cropped%29.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Genus
+</b>
+ <i>
+Ibycter
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+I. americanus
+</i>
+ <small>
+(Red-throated caracara)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Ibycter' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Red-throated_Caracara.jpg/622px-Red-throated_Caracara.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Milvago
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Milvago' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Milvago_chimango_Dichato_Chile_Flickr.jpg/220px-Milvago_chimango_Dichato_Chile_Flickr.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+M. chimango
+</i>
+ <small>
+(Chimango caracara)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Chimango_caracara' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Milvago_chimango_-Rio_Grande%2C_Rio_Grande_do_Sul%2C_Brazil-8.jpg/640px-Milvago_chimango_-Rio_Grande%2C_Rio_Grande_do_Sul%2C_Brazil-8.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subfamily
+</b>
+ <i>
+Falconinae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Falconinae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Common_Kestrel.jpg/398px-Common_Kestrel.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Falco
+</i>
+ <small>
+(Falcon)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Falcon' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Brown-Falcon%2C-Vic%2C-3.1.2008.jpg/400px-Brown-Falcon%2C-Vic%2C-3.1.2008.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+F. berigora
+</i>
+ <small>
+(Brown falcon)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Brown_falcon' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Brown_falcon.jpg/480px-Brown_falcon.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+F. peregrinus
+</i>
+ <small>
+(Peregrine falcon)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Peregrine_falcon' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Falco_peregrinus_good_-_Christopher_Watson.jpg/468px-Falco_peregrinus_good_-_Christopher_Watson.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+F. tinnunculus
+</i>
+ <small>
+(Common kestrel)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Common_kestrel' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Common_kestrel_falco_tinnunculus.jpg/425px-Common_kestrel_falco_tinnunculus.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Microhierax
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Microhierax' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Microhierax_erythrogenys.jpg/439px-Microhierax_erythrogenys.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+M. caerulescens
+</i>
+ <small>
+(Collared falconet)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Collared_falconet' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Microhierax_caerulescens.jpg/427px-Microhierax_caerulescens.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+M. erythrogenys
+</i>
+ <small>
+(Philippine falconet)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Philippine_falconet' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Philippine_Falconet_-_Microhierax_erythrogenys.jpg/220px-Philippine_Falconet_-_Microhierax_erythrogenys.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+M. melanoleucos
+</i>
+ <small>
+(Pied falconet)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Pied_falconet' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Pied_falconet%2C_%28Microhierax_melanoleucos%29_from_pakke_tiger_reserve_JEG3641_%28cropped%29.jpg/220px-Pied_falconet%2C_%28Microhierax_melanoleucos%29_from_pakke_tiger_reserve_JEG3641_%28cropped%29.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Polihierax
+</i>
+ <small>
+(Pygmy falcons)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Polihierax' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/African_Pygmy_Falcon_002.jpg/447px-African_Pygmy_Falcon_002.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+P. semitorquatus
+</i>
+ <small>
+(Pygmy falcon)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Pygmy_falcon' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Polihierax_semitorquatus_-Buffalo_Springs_National_Park%2C_Kenya-8.jpg/445px-Polihierax_semitorquatus_-Buffalo_Springs_National_Park%2C_Kenya-8.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subfamily
+</b>
+ <i>
+Herpetotherinae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Herpetotherinae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Micrastur_mintoni_-_Cryptic_Forest_Falcon%3B_Parauapebas%2C_Par%C3%A1%2C_Brazil.jpg/450px-Micrastur_mintoni_-_Cryptic_Forest_Falcon%3B_Parauapebas%2C_Par%C3%A1%2C_Brazil.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Micrastur
+</i>
+ <small>
+(Forest falcons)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Forest_falcon' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Micrastur_semitorquatus.jpg/462px-Micrastur_semitorquatus.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+M. mintoni
+</i>
+ <small>
+(Cryptic forest falcon)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Cryptic_forest_falcon' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Micrastur_mintoni_-_Cryptic_Forest_Falcon%3B_Parauapebas%2C_Par%C3%A1%2C_Brazil.jpg/450px-Micrastur_mintoni_-_Cryptic_Forest_Falcon%3B_Parauapebas%2C_Par%C3%A1%2C_Brazil.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+M. semitorquatus
+</i>
+ <small>
+(Collared forest falcon)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Collared_forest_falcon' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Micrastur_semitorquatus.jpg/462px-Micrastur_semitorquatus.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Genus
+</b>
+ <i>
+Herpetotheres
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+H. cachinnans
+</i>
+ <small>
+(Laughing falcon)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Laughing_falcon' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Lachfalke.jpg/400px-Lachfalke.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subfamily
+</b>
+ <i>
+('Polyborinae', ' or ', 'Caracarinae')
+</i>
+ <small>
+(Caracara)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Polyborinae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Mountain_caracara.jpg/220px-Mountain_caracara.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Class
+</b>
+ <i>
+Aves
+</i>
+ <small>
+(Eufalconimorphae, Birds)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Eufalconimorphae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Common_kestrel_falco_tinnunculus.jpg/425px-Common_kestrel_falco_tinnunculus.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Phylum
+</b>
+ <i>
+Chordata
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Kingdom
+</b>
+ <i>
+Animalia
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</body>
+</html>
+

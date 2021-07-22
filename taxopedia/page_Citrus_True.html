@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8'>
+</meta>
+<style>
+/* Credits */
+
+/* Ilya Pestov: Original, https://codepen.io/Pestov/pen/BLpgm */
+/* Paul Smirnov: Horizontal, https://codepen.io/paulsmirnov/pen/dyyOLwa */
+/* Background pattern, https://projects.verou.me/css3patterns/ */
+/* Shane Drabing: Changed styling, added image hover effects */
+
+/* Variables */
+
+:root {
+    --border-radius: 3px;
+    --border-width: 2px;
+    --border-padding: 10px;
+    --transition-speed: 0.5s;
+    --bg-color1: hsl(210, 10%, 50%);
+    --bg-color2: hsl(210, 10%, 52%);
+    --box-color: hsl(0, 0%, 75%);
+    --border-color: hsl(0, 0%, 75%);
+    --text-color: hsl(0, 0%, 25%);
+    --box-color-hover: hsl(0, 0%, 100%);
+    --border-color-hover: hsl(0, 0%, 100%);
+    --text-color-hover: hsl(0, 0%, 0%);
+}
+
+/* Now the CSS */
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background:
+    radial-gradient(circle at 40px 20px, transparent 10px, var(--bg-color1) 10px, var(--bg-color1), 20px, transparent 20px, transparent) 0px 0px,
+    radial-gradient(circle at 0px 20px, transparent 10px, var(--bg-color1) 10px, var(--bg-color1), 20px, transparent 20px, transparent) 0px 30px;
+    background-color: var(--bg-color2);
+    background-size: 40px 60px;
+}
+
+.tree {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    padding-top: 50px;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-bottom: 250px;
+}
+
+.tree ul {
+    padding-left: var(--border-padding);
+    position: relative;
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+
+.tree li {
+    text-align: center;
+    list-style-type: none;
+    position: relative;
+    padding: var(--border-radius) 0 var(--border-radius) var(--border-padding);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+}
+
+/* We will use ::before and ::after to draw the connectors */
+
+.tree li::before, .tree li::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 50%;
+    border-left: var(--border-width) solid var(--border-color);
+    width: var(--border-padding);
+    height: 50%;
+}
+
+.tree li::after {
+    bottom: auto;
+    top: 50%;
+    border-top: var(--border-width) solid var(--border-color);
+}
+
+/* We need to remove left-right connectors from elements without 
+any siblings */
+
+.tree li:only-child::after, .tree li:only-child::before {
+    display: none;
+}
+
+/* Remove space from the top of single children */
+
+.tree li:only-child {
+    padding-left: 0;
+}
+
+/* Remove left connector from first child and 
+right connector from last child */
+
+.tree li:first-child::before, .tree li:last-child::after {
+    border: 0 none;
+}
+
+/* Adding back the vertical connector to the last nodes */
+
+.tree li:last-child::before {
+    border-bottom: var(--border-width) solid var(--border-color);
+    border-radius: 0 0 var(--border-radius) 0;
+    -webkit-border-radius: 0 0 var(--border-radius) 0;
+    -moz-border-radius: 0 0 var(--border-radius) 0;
+}
+
+.tree li:first-child::after {
+    border-radius: 0 0 0 var(--border-radius);
+    -webkit-border-radius: 0 0 0 var(--border-radius);
+    -moz-border-radius: 0 0 0 var(--border-radius);
+}
+
+/* Time to add downward connectors from parents */
+
+.tree ul ul::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    border-top: var(--border-width) solid var(--border-color);
+    width: var(--border-padding);
+    height: 0;
+}
+
+/* Box styles */
+
+.tree li div {
+    cursor: pointer;
+    border: var(--border-width) solid var(--border-color);
+    padding: 4px 8px;
+    text-decoration: none;
+    color: var(--text-color);
+    background-color: var(--box-color);
+    font-family: arial, verdana, tahoma;
+    font-size: 12px;
+    display: flex-end;
+    -ms-flex-item-align: center;
+    -ms-grid-row-align: center;
+    align-self: center;
+    border-radius: var(--border-radius);
+    -webkit-border-radius: var(--border-radius);
+    -moz-border-radius: var(--border-radius);
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+}
+
+/* Time for some hover effects */
+
+/* We will apply the hover effect the the lineage of the element also */
+
+.tree li div:hover, .tree li div:hover+ul li div {
+    background: var(--box-color-hover);
+    color: var(--text-color-hover);
+    border: var(--border-width) solid var(--border-color-hover);
+}
+
+/* Connector styles on hover */
+
+.tree li div:hover+ul li::after, .tree li div:hover+ul li::before, .tree li div:hover+ul::before, .tree li div:hover+ul ul::before {
+    border-color: var(--border-color-hover);
+}
+
+/* Image hover effects */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+    transition: all 0.75s;
+    -webkit-transition: all 0.75s;
+    -moz-transition: all 0.75s;
+    transition-timing-function: ease-out;
+    transition-delay: 75ms;
+
+    width: auto;
+    height: auto;
+    max-width: 0px;
+    max-height: 0px;
+    display: block;
+    visibility: hidden;
+}
+
+div.parent:hover img {
+    transition: all 0.5s;
+    transition-delay: 15ms;
+    max-width: 75vw;
+    max-height: 50vh;
+    visibility: visible;
+}
+</style>
+</head>
+<body>
+<div class='tree'>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Citrus
+</i>
+ <small>
+(Kobayashi mikan)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citrus' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/OrangeBloss_wb.jpg/220px-OrangeBloss_wb.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. medica
+</i>
+ <small>
+(Citron, Dangyuja, Shonan Gold)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citrus_medica' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Chinesische_Zedrat_Zitrone.jpg/640px-Chinesische_Zedrat_Zitrone.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Variety
+</b>
+ <i>
+('C. m.', ' var. ', 'sarcodactylis')
+</i>
+ <small>
+(Buddha's hand, Melogold)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Fingered_citron' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Buddhas_hand_1.jpg/604px-Buddhas_hand_1.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+('C. ', ' x ', 'pyriformis')
+</i>
+ <small>
+(Ponderosa lemon, Jaffa orange)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Ponderosa_lemon' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/PonderosaLemon.jpg/220px-PonderosaLemon.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+('C. medica', ' + ', 'C. aurantium')
+</i>
+ <small>
+(Bizzaria, Fairchild tangerine)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Bizzaria' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Citrus_aurantium_%22bizzarria%22_frutto_acerbo.jpg/640px-Citrus_aurantium_%22bizzarria%22_frutto_acerbo.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+('C. tachibana', 'or', 'C. reticulata')
+</i>
+ <small>
+(Tachibana orange)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Tachibana_orange' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Citrus_tachibana%2C_Kofuku-ji_Nanendo.JPG/400px-Citrus_tachibana%2C_Kofuku-ji_Nanendo.JPG'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. australasica
+</i>
+ <small>
+(Australian finger lime, Citrus, Kanpei)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Finger_Lime' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Citrus_australasica_green_fruit1.JPG/220px-Citrus_australasica_green_fruit1.JPG'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. australis
+</i>
+ <small>
+(Australian round lime)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citrus_australis' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Citrus_australis_round_fruit.jpg/640px-Citrus_australis_round_fruit.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. bergamia
+</i>
+ <small>
+(Bergamot orange)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Bergamot_orange' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Citrus_bergamia_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-184.jpg/220px-Citrus_bergamia_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-184.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. cavaleriei
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citrus_ichangensis' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/7/7e/Ichangfruit.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. cavaleriei × C. maxima
+</i>
+ <small>
+(Shangjuan)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Ichang_lemon' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/7/7e/Ichangfruit.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Citrus_celebica' target='_blank'>
+<b>
+Species
+</b>
+ <i>
+C. celebica
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Citrus_crenatifolia' target='_blank'>
+<b>
+Species
+</b>
+ <i>
+C. crenatifolia
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. flaviculpus
+</i>
+ <small>
+(Ki-mikan, Blood lime)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Ougonkan' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/%C5%8Cgonkan.jpg/640px-%C5%8Cgonkan.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. garrawayi
+</i>
+ <small>
+(Mount White lime)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Mount_White_lime' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Comprehensive_catalogue_of_Queensland_plants%2C_both_indigenous_and_naturalised._To_which_are_added%2C_where_known%2C_the_aboriginal_and_other_vernacular_names%3B_with_numerous_illustrations%2C_and_copious_%2814779628021%29.jpg/356px-thumbnail.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. glauca
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citrus_glauca' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Citrus_glauca_fruit.jpg/640px-Citrus_glauca_fruit.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Citrus_gracilis' target='_blank'>
+<b>
+Species
+</b>
+ <i>
+C. gracilis
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Citrus_halimii' target='_blank'>
+<b>
+Species
+</b>
+ <i>
+C. halimii
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. hystrix
+</i>
+ <small>
+(Kaffir lime, Micrantha)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citrus_hystrix' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Citrus_hystrix_dsc07772.jpg/640px-Citrus_hystrix_dsc07772.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Citrus_indica' target='_blank'>
+<b>
+Species
+</b>
+ <i>
+C. indica
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Citrus_inodora' target='_blank'>
+<b>
+Species
+</b>
+ <i>
+C. inodora
+</i>
+ <small>
+(Russel River lime or odourless lime)
+</small>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. japonica
+</i>
+ <small>
+(Kumquat)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Kumquat' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Kumquat.jpeg/220px-Kumquat.jpeg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. junos
+</i>
+ <small>
+(Yuzu)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Yuzu' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Yuzu_oranges_%286459456959%29.jpg/640px-Yuzu_oranges_%286459456959%29.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Citrus_latipes' target='_blank'>
+<b>
+Species
+</b>
+ <i>
+C. latipes
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. leiocarpa
+</i>
+ <small>
+(Koji orange, Midknight valencia orange)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Koji_orange' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Madarines_white_bg02.jpg/640px-Madarines_white_bg02.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. limetta
+</i>
+ <small>
+(Cedro diamante, Lemonade fruit, Kiyomi)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Limetta' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Citrus_limetta.jpeg/336px-Citrus_limetta.jpeg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. limettioides
+</i>
+ <small>
+(Palestinian sweet lime, 'Sanbokan')
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Palestinian_sweet_lime' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Citrus_limettioides_-_Palestine_sweet_lime.jpg/640px-Citrus_limettioides_-_Palestine_sweet_lime.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. limon
+</i>
+ <small>
+(Lemon, Bang Mot tangerine, Hop stunt viroid)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Lemon' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/P1030323.JPG/640px-P1030323.JPG'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Citrus_longispina' target='_blank'>
+<b>
+Species
+</b>
+ <i>
+C. longispina
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. m. tuberosa
+</i>
+ <small>
+(Pompia)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Pompia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Frutto_pompia.jpg/640px-Frutto_pompia.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Citrus_macrophylla' target='_blank'>
+<b>
+Species
+</b>
+ <i>
+C. macrophylla
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. macroptera
+</i>
+ <small>
+(Cara cara navel orange, Yūkō)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citrus_macroptera' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Shatkoraseller.jpg/400px-Shatkoraseller.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Mangshanyegan' target='_blank'>
+<b>
+Species
+</b>
+ <i>
+C. mangshanensis
+</i>
+ <small>
+(Mangshanyegan)
+</small>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. maxima
+</i>
+ <small>
+(Pomelo, Oroblanco, Variety Etrog)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Pomelo' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Pomelo_fruit.jpg/640px-Pomelo_fruit.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. microcarpa
+</i>
+ <small>
+(Calamansi, Yūkō)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Calamansi' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Citrus_%C3%97_microcarpa_kz1.jpg/640px-Citrus_%C3%97_microcarpa_kz1.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. myrtifolia
+</i>
+ <small>
+(Myrtle-leaved orange tree, Sudachi)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Chinotto' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Citrus_myrtifolia_2.jpg/640px-Citrus_myrtifolia_2.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Byeonggyul' target='_blank'>
+<b>
+Species
+</b>
+ <i>
+C. platymamma
+</i>
+ <small>
+(Byeonggyul)
+</small>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. poonensis
+</i>
+ <small>
+(Ponkan, Variety Etrog, Clementine, 'Sanbokan')
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Ponkan' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Ponkan_tree_in_Florida.jpg/250px-Ponkan_tree_in_Florida.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. reshni
+</i>
+ <small>
+(Valencia orange)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Cleopatra_Mandarin' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Citrus_reticulata-Cleopatra_IMG_2022.jpg/450px-Citrus_reticulata-Cleopatra_IMG_2022.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. reticulata
+</i>
+ <small>
+(Mandarin orange, Nanfengmiju)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citrus_reticulata' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Citrus_reticulata_April_2013_Nordbaden.JPG/450px-Citrus_reticulata_April_2013_Nordbaden.JPG'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. reticulata × paradisi
+</i>
+ <small>
+(Jamaican tangelo)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Jamaican_tangelo' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/0/07/Uniq_Fruit_from_Jamaica.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. reticulata × sinensis
+</i>
+ <small>
+(Tangor, Balady citron (etrog), Dekopon, Smith Red Valencia, Cam sành)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Tangor' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Photo_ortanique.JPG/640px-Photo_ortanique.JPG'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. sphaerocarpa
+</i>
+ <small>
+(Kabosu)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Kabosu' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Kabosu_27_aout_2016.jpg/640px-Kabosu_27_aout_2016.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. tamurana
+</i>
+ <small>
+(Hyūganatsu)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Hyuganatsu' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Hyuganatsu_2.jpg/400px-Hyuganatsu_2.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. tangerina
+</i>
+ <small>
+(Tangerine, Kinkoji unshiu, Hop stunt viroid, Citrus exocortis viroid, Citrus gummy bark viroid)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Tangerine' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/TangerineFruit.jpg/220px-TangerineFruit.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. trifoliata
+</i>
+ <small>
+(Trifoliate orange, Komikan)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citrus_trifoliata' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Poncirus_trifoliata_1_JdP.jpg/640px-Poncirus_trifoliata_1_JdP.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. unshiu
+</i>
+ <small>
+(Nippon Orangequat, Variegated pink lemon)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Naartjie' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Citrus_unshiu_20101127_c.jpg/640px-Citrus_unshiu_20101127_c.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Volkamer_lemon' target='_blank'>
+<b>
+Species
+</b>
+ <i>
+C. volkameriana
+</i>
+ <small>
+(Volkamer lemon)
+</small>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. warburgiana
+</i>
+ <small>
+(Shonan Gold)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/New_Guinea_wild_lime' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/%E6%B9%98%E5%8D%97%E3%82%B4%E3%83%BC%E3%83%AB%E3%83%89_%E7%B5%90%E6%9E%9C.jpg/640px-%E6%B9%98%E5%8D%97%E3%82%B4%E3%83%BC%E3%83%AB%E3%83%89_%E7%B5%90%E6%9E%9C.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. wintersii
+</i>
+ <small>
+(Brown River finger lime, Variety Etrog)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Brown_River_finger_lime' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/OrdangNiceB.jpg/220px-OrdangNiceB.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × aurantiifolia
+</i>
+ <small>
+(Key lime, Kinnow)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Mexican_lime' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Ripekeylime.jpg/522px-Ripekeylime.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × aurantium
+</i>
+ <small>
+(Citrus, Moroccan citron, Dancy)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Sour_orange' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Citrus_aurantium.jpg/640px-Citrus_aurantium.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × daidai
+</i>
+ <small>
+(Daidai)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Daidai' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Citrus_aurantium_chinotto1.jpg/450px-Citrus_aurantium_chinotto1.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × depressa
+</i>
+ <small>
+(Citrus, Yūkō)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Shekwasha' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/9/94/Shikwasa-1.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × floridana
+</i>
+ <small>
+(Limequat)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Limequat' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Limequat.jpg/640px-Limequat.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × hassaku
+</i>
+ <small>
+(Hassaku orange)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Hassaku_orange' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hassaku_fruit_and_cross_section.jpg/640px-Hassaku_fruit_and_cross_section.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × hebesu
+</i>
+ <small>
+('Hebesu')
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Hebesu' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Hebezu.jpg/640px-Hebezu.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × insitorum
+</i>
+ <small>
+(Citrange, Kawachi Bankan, Orangelo)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citrange' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Pomological_Watercolor_POM00006386.jpg/401px-Pomological_Watercolor_POM00006386.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × jabara
+</i>
+ <small>
+('Jabara' (citrus))
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citrus_jabara' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Citrus_jabara_by_OpenCage.jpg/480px-Citrus_jabara_by_OpenCage.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × jambhiri
+</i>
+ <small>
+(Citrus, Laraha)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Rough_lemon' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Starr_061105-1366_Citrus_limon.jpg/640px-Starr_061105-1366_Citrus_limon.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × latifolia
+</i>
+ <small>
+(Persian lime, Blood orange)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Persian_lime' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Starr-140117-3997-Citrus_latifolia-Tahitian_fruit_and_leaves-Hawea_Pl_Olinda-Maui_%2824612312943%29.jpg/640px-Starr-140117-3997-Citrus_latifolia-Tahitian_fruit_and_leaves-Hawea_Pl_Olinda-Maui_%2824612312943%29.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × meyeri
+</i>
+ <small>
+(Meyer lemon, Clementine)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Meyer_lemon' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Meyer_Lemon.jpg/640px-Meyer_Lemon.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × natsudaidai
+</i>
+ <small>
+(Natsumikan / Amanatsu)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Amanatsu' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Citrus_kawanonatsudaidai_fruit.jpg/640px-Citrus_kawanonatsudaidai_fruit.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × paradisi
+</i>
+ <small>
+(New Zealand Grapefruit)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/New_Zealand_grapefruit' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/New_Zealand_Grapefruit-Poor_Man%27s_Orange.jpg/640px-New_Zealand_Grapefruit-Poor_Man%27s_Orange.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × sinensis
+</i>
+ <small>
+(Citrus)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citrus_sinensis' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/OrangeBloss_wb.jpg/220px-OrangeBloss_wb.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × tangelo
+</i>
+ <small>
+(Tangelo, Hop stunt viroid, Balady citron (etrog), Pospiviroid)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Tangelo' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Minneola_fruit_3.jpg/640px-Minneola_fruit_3.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C. × webberii
+</i>
+ <small>
+('Kalpi' (citrus))
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citrus_webberi' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Pomological_Watercolor_POM00006385.jpg/399px-Pomological_Watercolor_POM00006385.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+C.limon × C.paradisi
+</i>
+ <small>
+(Imperial Lemon)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Imperial_lemon' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Imperial_lemon_at_Kew_Gardens.jpg/480px-Imperial_lemon_at_Kew_Gardens.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+ <i>
+Citrus × iyo
+</i>
+ <small>
+(Iyokan, Orangelo, Mandelo, Citrus exocortis viroid)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Iyokan' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Iyokan_on_tree.jpg/220px-Iyokan_on_tree.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Subtribe
+</b>
+ <i>
+Citrinae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Tribe
+</b>
+ <i>
+Citreae
+</i>
+ <small>
+(Citrus tristeza virus, Moroccan citron)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citreae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Citrus_aurantium.jpg/640px-Citrus_aurantium.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Subfamily
+</b>
+ <i>
+Aurantioideae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Rutaceae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Order
+</b>
+ <i>
+Sapindales
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Kingdom
+</b>
+ <i>
+Plantae
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</body>
+</html>
+

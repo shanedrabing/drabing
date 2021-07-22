@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8'>
+</meta>
+<style>
+/* Credits */
+
+/* Ilya Pestov: Original, https://codepen.io/Pestov/pen/BLpgm */
+/* Paul Smirnov: Horizontal, https://codepen.io/paulsmirnov/pen/dyyOLwa */
+/* Background pattern, https://projects.verou.me/css3patterns/ */
+/* Shane Drabing: Changed styling, added image hover effects */
+
+/* Variables */
+
+:root {
+    --border-radius: 3px;
+    --border-width: 2px;
+    --border-padding: 10px;
+    --transition-speed: 0.5s;
+    --bg-color1: hsl(210, 10%, 50%);
+    --bg-color2: hsl(210, 10%, 52%);
+    --box-color: hsl(0, 0%, 75%);
+    --border-color: hsl(0, 0%, 75%);
+    --text-color: hsl(0, 0%, 25%);
+    --box-color-hover: hsl(0, 0%, 100%);
+    --border-color-hover: hsl(0, 0%, 100%);
+    --text-color-hover: hsl(0, 0%, 0%);
+}
+
+/* Now the CSS */
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background:
+    radial-gradient(circle at 40px 20px, transparent 10px, var(--bg-color1) 10px, var(--bg-color1), 20px, transparent 20px, transparent) 0px 0px,
+    radial-gradient(circle at 0px 20px, transparent 10px, var(--bg-color1) 10px, var(--bg-color1), 20px, transparent 20px, transparent) 0px 30px;
+    background-color: var(--bg-color2);
+    background-size: 40px 60px;
+}
+
+.tree {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    padding-top: 50px;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-bottom: 250px;
+}
+
+.tree ul {
+    padding-left: var(--border-padding);
+    position: relative;
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+
+.tree li {
+    text-align: center;
+    list-style-type: none;
+    position: relative;
+    padding: var(--border-radius) 0 var(--border-radius) var(--border-padding);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+}
+
+/* We will use ::before and ::after to draw the connectors */
+
+.tree li::before, .tree li::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 50%;
+    border-left: var(--border-width) solid var(--border-color);
+    width: var(--border-padding);
+    height: 50%;
+}
+
+.tree li::after {
+    bottom: auto;
+    top: 50%;
+    border-top: var(--border-width) solid var(--border-color);
+}
+
+/* We need to remove left-right connectors from elements without 
+any siblings */
+
+.tree li:only-child::after, .tree li:only-child::before {
+    display: none;
+}
+
+/* Remove space from the top of single children */
+
+.tree li:only-child {
+    padding-left: 0;
+}
+
+/* Remove left connector from first child and 
+right connector from last child */
+
+.tree li:first-child::before, .tree li:last-child::after {
+    border: 0 none;
+}
+
+/* Adding back the vertical connector to the last nodes */
+
+.tree li:last-child::before {
+    border-bottom: var(--border-width) solid var(--border-color);
+    border-radius: 0 0 var(--border-radius) 0;
+    -webkit-border-radius: 0 0 var(--border-radius) 0;
+    -moz-border-radius: 0 0 var(--border-radius) 0;
+}
+
+.tree li:first-child::after {
+    border-radius: 0 0 0 var(--border-radius);
+    -webkit-border-radius: 0 0 0 var(--border-radius);
+    -moz-border-radius: 0 0 0 var(--border-radius);
+}
+
+/* Time to add downward connectors from parents */
+
+.tree ul ul::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    border-top: var(--border-width) solid var(--border-color);
+    width: var(--border-padding);
+    height: 0;
+}
+
+/* Box styles */
+
+.tree li div {
+    cursor: pointer;
+    border: var(--border-width) solid var(--border-color);
+    padding: 4px 8px;
+    text-decoration: none;
+    color: var(--text-color);
+    background-color: var(--box-color);
+    font-family: arial, verdana, tahoma;
+    font-size: 12px;
+    display: flex-end;
+    -ms-flex-item-align: center;
+    -ms-grid-row-align: center;
+    align-self: center;
+    border-radius: var(--border-radius);
+    -webkit-border-radius: var(--border-radius);
+    -moz-border-radius: var(--border-radius);
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+}
+
+/* Time for some hover effects */
+
+/* We will apply the hover effect the the lineage of the element also */
+
+.tree li div:hover, .tree li div:hover+ul li div {
+    background: var(--box-color-hover);
+    color: var(--text-color-hover);
+    border: var(--border-width) solid var(--border-color-hover);
+}
+
+/* Connector styles on hover */
+
+.tree li div:hover+ul li::after, .tree li div:hover+ul li::before, .tree li div:hover+ul::before, .tree li div:hover+ul ul::before {
+    border-color: var(--border-color-hover);
+}
+
+/* Image hover effects */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+    transition: all 0.75s;
+    -webkit-transition: all 0.75s;
+    -moz-transition: all 0.75s;
+    transition-timing-function: ease-out;
+    transition-delay: 75ms;
+
+    width: auto;
+    height: auto;
+    max-width: 0px;
+    max-height: 0px;
+    display: block;
+    visibility: hidden;
+}
+
+div.parent:hover img {
+    transition: all 0.5s;
+    transition-delay: 15ms;
+    max-width: 75vw;
+    max-height: 50vh;
+    visibility: visible;
+}
+</style>
+</head>
+<body>
+<div class='tree'>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+<br>
+<i>
+Sapindales
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Sapindales' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Acer-negundo-total.JPG/640px-Acer-negundo-total.JPG'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Section
+</b>
+<br>
+<i>
+('Acer ', 'sect.', ' Negundo')
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+<br>
+<i>
+Sapindaceae
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Sapindaceae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Lychee.jpg/640px-Lychee.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subfamily
+</b>
+<br>
+<i>
+Hippocastanoideae
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Hippocastanoideae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Gammel_Holtegaard_tree.jpg/592px-Gammel_Holtegaard_tree.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+<br>
+<i>
+Aesculus
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aesculus' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Aesculus_hippocastanum_flori.jpg/431px-Aesculus_hippocastanum_flori.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+A. californica
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aesculus_californica' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Aesculus_californica_Mt_Burdell.jpg/640px-Aesculus_californica_Mt_Burdell.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+A. chinensis
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aesculus_chinensis' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/AesculusChinensisLeaf.jpg/640px-AesculusChinensisLeaf.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+A. flava
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aesculus_flava' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Aesculus_flava2.jpg/450px-Aesculus_flava2.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+A. glabra
+</i>
+<br>
+<small>
+(Ohio buckeye)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aesculus_glabra' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Aesculus_glabra_var._glabra.jpg/449px-Aesculus_glabra_var._glabra.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+A. hippocastanum
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aesculus_hippocastanum' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Illustration_Aesculus_hippocastanum0_clean.jpg/371px-Illustration_Aesculus_hippocastanum0_clean.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+A. indica
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aesculus_indica' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Aesculus_indica_tree.jpg/484px-Aesculus_indica_tree.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+A. parryi
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aesculus_parryi' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Aesculusparryi.jpg/488px-Aesculusparryi.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+A. parviflora
+</i>
+<br>
+<small>
+(Bottlebrush buckeye)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aesculus_parviflora' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Aesculus_parviflora_blooming.jpg/640px-Aesculus_parviflora_blooming.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+A. pavia
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aesculus_pavia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Aesculus_pavia_3.jpg/640px-Aesculus_pavia_3.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+A. sylvatica
+</i>
+<br>
+<small>
+(Painted buckeye)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aesculus_sylvatica' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Painted_buckeye_Aesculus_sylvatica_flowers_leaves.jpg/640px-Painted_buckeye_Aesculus_sylvatica_flowers_leaves.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+A. turbinata
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aesculus_turbinata' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Aesculus_turbinata_7.JPG/450px-Aesculus_turbinata_7.JPG'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+A. wangii
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aesculus_wangii' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Aesculus_wangii_-_Kunming_Botanical_Garden_-_DSC02928.JPG/450px-Aesculus_wangii_-_Kunming_Botanical_Garden_-_DSC02928.JPG'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+<br>
+<i>
+Acer
+</i>
+<br>
+<small>
+(Maple)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Maple' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Acer_pseudoplatanus_002.jpg/640px-Acer_pseudoplatanus_002.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+A. negundo
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Manitoba_Maple' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Acer_negundo_44809168.jpg/640px-Acer_negundo_44809168.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+A. pseudoplatanus
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Acer_pseudoplatanus' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Acer_pseudoplatanus_005.jpg/640px-Acer_pseudoplatanus_005.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+<br>
+<i>
+Dipteronia
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Dipteronia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Dipteronia_sinensis_-_Berlin_Botanical_Garden_-_IMG_8608.JPG/450px-Dipteronia_sinensis_-_Berlin_Botanical_Garden_-_IMG_8608.JPG'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+D. sinensis
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Dipteronia_sinensis' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Dipteronia_sinensis_-_Berlin_Botanical_Garden_-_IMG_8608.JPG/450px-Dipteronia_sinensis_-_Berlin_Botanical_Garden_-_IMG_8608.JPG'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Genus
+</b>
+<br>
+<i>
+Handeliodendron
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Handeliodendron' target='_blank'>
+<b>
+Species
+</b>
+<br>
+<i>
+H. bodinieri
+</i>
+<br>
+<small>
+(Handeliodendron)
+</small>
+<br>
+ ⛓<br>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+<br>
+<i>
+Billia
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Billia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Billia_colombiana_%2811378609234%29.jpg/640px-Billia_colombiana_%2811378609234%29.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subfamily
+</b>
+<br>
+<i>
+Sapindoideae
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Sapindoideae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Rambutans_by_Muhammad_Mahdi_Karim.jpg/480px-Rambutans_by_Muhammad_Mahdi_Karim.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Genus
+</b>
+<br>
+<i>
+Litchi
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+L. chinensis
+</i>
+<br>
+<small>
+(Lychee)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Litchi_chinensis' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Litchi_chinensis_fruits.JPG/640px-Litchi_chinensis_fruits.JPG'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+<br>
+<i>
+Nephelium
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Nephelium' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Rambutans_by_Muhammad_Mahdi_Karim.jpg/480px-Rambutans_by_Muhammad_Mahdi_Karim.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+N. lappaceum
+</i>
+<br>
+<small>
+(Rambutan)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Rambutan' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Rambutan_white_background_alt.jpg/640px-Rambutan_white_background_alt.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subfamily
+</b>
+<br>
+<i>
+Dodonaeoideae
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Dodonaeoideae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Dodonaea_viscosa_%28Hopbush%29_W_IMG_1898.jpg/220px-Dodonaea_viscosa_%28Hopbush%29_W_IMG_1898.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+<br>
+<i>
+Dodonaea
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Dodonaea' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Dodonea_viscosa_flowers1.JPG/640px-Dodonea_viscosa_flowers1.JPG'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+D. viscosa
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Dodonaea_viscosa' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Dodonaea_viscosa_%28Hopbush%29_W2_IMG_1899.jpg/220px-Dodonaea_viscosa_%28Hopbush%29_W2_IMG_1899.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Subfamily
+</b>
+<br>
+<i>
+Xanthoceroideae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Genus
+</b>
+<br>
+<i>
+Xanthoceras
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+X. sorbifolium
+</i>
+<br>
+<small>
+(Xanthoceras)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Xanthoceroideae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Xanthoceras_sorbifolia.jpg/441px-Xanthoceras_sorbifolia.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Section
+</b>
+<br>
+<i>
+('Acer ', 'sect.', ' Acer')
+</i>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Series
+</b>
+<br>
+<i>
+('Acer ', 'ser.', ' Acer')
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Kingdom
+</b>
+<br>
+<i>
+Plantae
+</i>
+<br>
+<small>
+(Rosids)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Malvids' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Euphorbia_heterophylla_%28Painted_Euphorbia%29_in_Hyderabad%2C_AP_W_IMG_9720.jpg/220px-Euphorbia_heterophylla_%28Painted_Euphorbia%29_in_Hyderabad%2C_AP_W_IMG_9720.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</body>
+</html>
+

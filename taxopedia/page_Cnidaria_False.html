@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8'>
+</meta>
+<style>
+/* Credits */
+
+/* Ilya Pestov: Original, https://codepen.io/Pestov/pen/BLpgm */
+/* Paul Smirnov: Horizontal, https://codepen.io/paulsmirnov/pen/dyyOLwa */
+/* Background pattern, https://projects.verou.me/css3patterns/ */
+/* Shane Drabing: Changed styling, added image hover effects */
+
+/* Variables */
+
+:root {
+    --border-radius: 3px;
+    --border-width: 2px;
+    --border-padding: 10px;
+    --transition-speed: 0.5s;
+    --bg-color1: hsl(210, 10%, 50%);
+    --bg-color2: hsl(210, 10%, 52%);
+    --box-color: hsl(0, 0%, 75%);
+    --border-color: hsl(0, 0%, 75%);
+    --text-color: hsl(0, 0%, 25%);
+    --box-color-hover: hsl(0, 0%, 100%);
+    --border-color-hover: hsl(0, 0%, 100%);
+    --text-color-hover: hsl(0, 0%, 0%);
+}
+
+/* Now the CSS */
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background:
+    radial-gradient(circle at 40px 20px, transparent 10px, var(--bg-color1) 10px, var(--bg-color1), 20px, transparent 20px, transparent) 0px 0px,
+    radial-gradient(circle at 0px 20px, transparent 10px, var(--bg-color1) 10px, var(--bg-color1), 20px, transparent 20px, transparent) 0px 30px;
+    background-color: var(--bg-color2);
+    background-size: 40px 60px;
+}
+
+.tree {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    padding-top: 50px;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-bottom: 250px;
+}
+
+.tree ul {
+    padding-left: var(--border-padding);
+    position: relative;
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+
+.tree li {
+    text-align: center;
+    list-style-type: none;
+    position: relative;
+    padding: var(--border-radius) 0 var(--border-radius) var(--border-padding);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+}
+
+/* We will use ::before and ::after to draw the connectors */
+
+.tree li::before, .tree li::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 50%;
+    border-left: var(--border-width) solid var(--border-color);
+    width: var(--border-padding);
+    height: 50%;
+}
+
+.tree li::after {
+    bottom: auto;
+    top: 50%;
+    border-top: var(--border-width) solid var(--border-color);
+}
+
+/* We need to remove left-right connectors from elements without 
+any siblings */
+
+.tree li:only-child::after, .tree li:only-child::before {
+    display: none;
+}
+
+/* Remove space from the top of single children */
+
+.tree li:only-child {
+    padding-left: 0;
+}
+
+/* Remove left connector from first child and 
+right connector from last child */
+
+.tree li:first-child::before, .tree li:last-child::after {
+    border: 0 none;
+}
+
+/* Adding back the vertical connector to the last nodes */
+
+.tree li:last-child::before {
+    border-bottom: var(--border-width) solid var(--border-color);
+    border-radius: 0 0 var(--border-radius) 0;
+    -webkit-border-radius: 0 0 var(--border-radius) 0;
+    -moz-border-radius: 0 0 var(--border-radius) 0;
+}
+
+.tree li:first-child::after {
+    border-radius: 0 0 0 var(--border-radius);
+    -webkit-border-radius: 0 0 0 var(--border-radius);
+    -moz-border-radius: 0 0 0 var(--border-radius);
+}
+
+/* Time to add downward connectors from parents */
+
+.tree ul ul::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    border-top: var(--border-width) solid var(--border-color);
+    width: var(--border-padding);
+    height: 0;
+}
+
+/* Box styles */
+
+.tree li div {
+    cursor: pointer;
+    border: var(--border-width) solid var(--border-color);
+    padding: 4px 8px;
+    text-decoration: none;
+    color: var(--text-color);
+    background-color: var(--box-color);
+    font-family: arial, verdana, tahoma;
+    font-size: 12px;
+    display: flex-end;
+    -ms-flex-item-align: center;
+    -ms-grid-row-align: center;
+    align-self: center;
+    border-radius: var(--border-radius);
+    -webkit-border-radius: var(--border-radius);
+    -moz-border-radius: var(--border-radius);
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+}
+
+/* Time for some hover effects */
+
+/* We will apply the hover effect the the lineage of the element also */
+
+.tree li div:hover, .tree li div:hover+ul li div {
+    background: var(--box-color-hover);
+    color: var(--text-color-hover);
+    border: var(--border-width) solid var(--border-color-hover);
+}
+
+/* Connector styles on hover */
+
+.tree li div:hover+ul li::after, .tree li div:hover+ul li::before, .tree li div:hover+ul::before, .tree li div:hover+ul ul::before {
+    border-color: var(--border-color-hover);
+}
+
+/* Image hover effects */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+    transition: all 0.75s;
+    -webkit-transition: all 0.75s;
+    -moz-transition: all 0.75s;
+    transition-timing-function: ease-out;
+    transition-delay: 75ms;
+
+    width: auto;
+    height: auto;
+    max-width: 0px;
+    max-height: 0px;
+    display: block;
+    visibility: hidden;
+}
+
+div.parent:hover img {
+    transition: all 0.5s;
+    transition-delay: 15ms;
+    max-width: 75vw;
+    max-height: 50vh;
+    visibility: visible;
+}
+</style>
+</head>
+<body>
+<div class='tree'>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Phylum
+</b>
+ <i>
+Cnidaria
+</i>
+ <small>
+(Myxozoa)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Cnidaria' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Cnidaria.png/621px-Cnidaria.png' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Class
+</b>
+ <i>
+Anthozoa
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Anthozoa' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Coral_Outcrop_Flynn_Reef.jpg/640px-Coral_Outcrop_Flynn_Reef.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Order
+</b>
+ <i>
+Alcyonacea
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Subergorgiidae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Genus
+</b>
+ <i>
+Annella
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subclass
+</b>
+ <i>
+Hexacorallia
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Hexacorallia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Acropora_latistella_%28Table_coral%29.jpg/640px-Acropora_latistella_%28Table_coral%29.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Actiniaria
+</i>
+ <small>
+(Sea anemone)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Sea_anemone' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Actiniaria.jpg/640px-Actiniaria.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Edwardsiidae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Genus
+</b>
+ <i>
+Nematostella
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Nemanthidae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Nemanthus
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Nemanthus' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Colonial_anemone_zebra.jpg/471px-Colonial_anemone_zebra.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Suborder
+</b>
+ <i>
+Enthemonae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Enthemonae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Sea_Loch_Anemone.jpg/480px-Sea_Loch_Anemone.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Superfamily
+</b>
+ <i>
+Metridioidea
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Metridioidea' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Sea_Loch_Anemone.jpg/480px-Sea_Loch_Anemone.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Gonactiniidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Gonactiniidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Sea_Loch_Anemone.jpg/480px-Sea_Loch_Anemone.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Genus
+</b>
+ <i>
+Protanthea
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Anenthemonae' target='_blank'>
+<b>
+Suborder
+</b>
+ <i>
+Anenthemonae
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Scleractinia
+</i>
+ <small>
+(Stony corals)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Scleractinia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Haeckel_Hexacoralla.jpg/429px-Haeckel_Hexacoralla.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Suborder
+</b>
+ <i>
+Astrocoeiina
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Acroporidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Acroporidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Acropora_secale_%28Hard_coral%29.jpg/450px-Acropora_secale_%28Hard_coral%29.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Acropora
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Acropora' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Acropora_pulchra.jpg/640px-Acropora_pulchra.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subclass
+</b>
+ <i>
+Ceriantharia
+</i>
+ <small>
+(Tube-dwelling anemones)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Ceriantharia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Cerianthidae_sp.jpg/220px-Cerianthidae_sp.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subclass
+</b>
+ <i>
+Octocorallia
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Octocorallia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Pink_soft_coral_Nick_Hobgood.jpg/220px-Pink_soft_coral_Nick_Hobgood.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Class
+</b>
+ <i>
+Myxozoa
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Subclass
+</b>
+ <i>
+Myxosporea
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Bivalvulida
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Bivalvulida' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Myxobolus_spinacurvatura.jpg/220px-Myxobolus_spinacurvatura.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Suborder
+</b>
+ <i>
+Platysporina
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Myxobolidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Myxobolidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Mspinacurvatura.jpg/220px-Mspinacurvatura.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Myxobolus
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Myxobolus' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Mspinacurvatura.jpg/220px-Mspinacurvatura.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Class
+</b>
+ <i>
+Polypodiozoa
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Order
+</b>
+ <i>
+Polypodiidea
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Polypodiidae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Genus
+</b>
+ <i>
+Polypodium
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Class
+</b>
+ <i>
+Malacosporea
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Malacosporea' target='_blank'>
+<b>
+Family
+</b>
+ <i>
+Saccosporidae
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Class
+</b>
+ <i>
+Myxosporea
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Myxosporea' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Parasite150085-fig2_Kudoa_septempunctata_spores_from_olive_flounder_%28Paralichthys_olivaceus%29.tif/lossy-page1-220px-Parasite150085-fig2_Kudoa_septempunctata_spores_from_olive_flounder_%28Paralichthys_olivaceus%29.tif.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Multivalvulida
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Multivalvulida' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Parasite150085-fig2_Kudoa_septempunctata_spores_from_olive_flounder_%28Paralichthys_olivaceus%29.tif/lossy-page1-220px-Parasite150085-fig2_Kudoa_septempunctata_spores_from_olive_flounder_%28Paralichthys_olivaceus%29.tif.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subphylum
+</b>
+ <i>
+Medusozoa
+</i>
+ <small>
+(Jellyfish)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Medusozoa' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Sea_nettles.jpg/260px-Sea_nettles.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Class
+</b>
+ <i>
+Hydrozoa
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Hydrozoans' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Haeckel_Siphonophorae_7.jpg/426px-Haeckel_Siphonophorae_7.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subclass
+</b>
+ <i>
+Trachylinae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Trachylinae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Expl0393_-_Flickr_-_NOAA_Photo_Library.jpg/640px-Expl0393_-_Flickr_-_NOAA_Photo_Library.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Narcomedusae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Narcomedusae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Bathykorus_bouilloni.jpg/480px-Bathykorus_bouilloni.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Aeginidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aeginidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Bathykorus_bouilloni.jpg/480px-Bathykorus_bouilloni.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Genus
+</b>
+ <i>
+Bathykorus
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Csiromedusidae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Genus
+</b>
+ <i>
+Csiromedusa
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Tetraplatiidae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Tetraplatia
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Tetraplatidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Archives_de_zoologie_exp%C3%A9rimentale_et_g%C3%A9n%C3%A9rale_%281890%29_%2820325624495%29.jpg/385px-Archives_de_zoologie_exp%C3%A9rimentale_et_g%C3%A9n%C3%A9rale_%281890%29_%2820325624495%29.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Cuninidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Cuninidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/PSM_V33_D760_Jelly_fish_cunocantha_octonaria.jpg/640px-PSM_V33_D760_Jelly_fish_cunocantha_octonaria.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Solmarisidae' target='_blank'>
+<b>
+Family
+</b>
+ <i>
+Solmarisidae
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Solmundaeginidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Solmundaeginidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Solmundella_bitentaculata.jpg/400px-Solmundella_bitentaculata.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Trachymedusae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Trachymedusae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Expl0393_-_Flickr_-_NOAA_Photo_Library.jpg/640px-Expl0393_-_Flickr_-_NOAA_Photo_Library.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Halicreatidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Halicreatidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Botrynema_ellinorae.jpg/220px-Botrynema_ellinorae.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Botrynema
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Botrynema' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Botrynema_brucei.jpg/405px-Botrynema_brucei.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Rhopalonematidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Rhopalonematidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Expl0393_-_Flickr_-_NOAA_Photo_Library.jpg/640px-Expl0393_-_Flickr_-_NOAA_Photo_Library.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Crossota
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Crossota' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Expl0393_-_Flickr_-_NOAA_Photo_Library.jpg/640px-Expl0393_-_Flickr_-_NOAA_Photo_Library.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Geryoniidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Geryoniidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Liriope_tetraphylla_by_OpenCage.jpg/479px-Liriope_tetraphylla_by_OpenCage.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Limnomedusae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Limnomedusae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Olindias_formosa1.jpg/640px-Olindias_formosa1.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Olindiidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Olindiidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Olindias_formosa1.jpg/640px-Olindias_formosa1.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Olindias
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Olindias' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Olindias_formosa1.jpg/640px-Olindias_formosa1.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Actinulida
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Actinulida' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Lasse01.jpg/638px-Lasse01.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subclass
+</b>
+ <i>
+Hydroidolina
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Hydroidolina' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Haeckel_Siphonophorae.jpg/430px-Haeckel_Siphonophorae.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Leptothecata
+</i>
+ <small>
+(Thecate hydroids)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Leptothecata' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Aequorea3.jpeg/586px-Aequorea3.jpeg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Aequoreidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aequoreidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Aequorea3.jpeg/586px-Aequorea3.jpeg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Aequorea
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aequorea' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Aequorea3.jpeg/586px-Aequorea3.jpeg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Genus
+</b>
+ <i>
+Rhacostoma
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Anthoathecata
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Anthoathecata' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Haeckel_Anthomedusae.jpg/427px-Haeckel_Anthomedusae.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Siphonophorae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Siphonophorae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Photographs_of_living_siphonophores.jpg/392px-Photographs_of_living_siphonophores.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Class
+</b>
+ <i>
+Scyphozoa
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Scyphozoa' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Cauliflour_Jellyfish%2C_Cephea_cephea_at_Marsa_Shouna%2C_Red_Sea%2C_Egypt_SCUBA.jpg/458px-Cauliflour_Jellyfish%2C_Cephea_cephea_at_Marsa_Shouna%2C_Red_Sea%2C_Egypt_SCUBA.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Order
+</b>
+ <i>
+Rhizostomeae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Cepheidae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Cephea
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Cephea' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/The_water_is_full_of_Cauliflour_Jellyfish%2C_Cephea_cephea_at_Marsa_Shouna%2C_Red_Sea%2C_Egypt_-SCUBA_%286238367346%29.jpg/640px-The_water_is_full_of_Cauliflour_Jellyfish%2C_Cephea_cephea_at_Marsa_Shouna%2C_Red_Sea%2C_Egypt_-SCUBA_%286238367346%29.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subclass
+</b>
+ <i>
+Discomedusae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Discomedusae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Haeckel_Discomedusae_8.jpg/418px-Haeckel_Discomedusae_8.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Semaeostomeae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Semaeostomeae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Sea_nettles.jpg/220px-Sea_nettles.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Pelagiidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Pelagiidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Chrysaora_jelly.jpg/220px-Chrysaora_jelly.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Chrysaora
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Chrysaora' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Six-Sea-Nettles.jpg/220px-Six-Sea-Nettles.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Class
+</b>
+ <i>
+Cubozoa
+</i>
+ <small>
+(Box jellyfish)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Cubozoa' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Avispa_marina_cropped.png/473px-Avispa_marina_cropped.png' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Carybdeida
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Carybdeida' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Tripedalia-cystophora.png/638px-Tripedalia-cystophora.png' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Carukiidae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Genus
+</b>
+ <i>
+Carukia
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Chirodropida
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Chirodropida' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Avispa_marina.jpg/337px-Avispa_marina.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Chirodropidae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+ <i>
+Chironex
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Chironex' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Avispa_marina_cropped.png/473px-Avispa_marina_cropped.png' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Class
+</b>
+ <i>
+Staurozoa
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Staurozoa' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Haliclystus_stejnegeri_1.jpg/480px-Haliclystus_stejnegeri_1.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Stauromedusae
+</i>
+ <small>
+(Stalked jellyfishes)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Stalked_jellyfish' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Haeckel_Stauromedusae.jpg/428px-Haeckel_Stauromedusae.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/ParaHoxozoa' target='_blank'>
+<b>
+Subkingdom
+</b>
+ <i>
+Eumetazoa
+</i>
+ <small>
+(ParaHoxozoa, Eumetazoans)
+</small>
+  ⛓<br>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Animal' target='_blank'>
+<b>
+Kingdom
+</b>
+ <i>
+Animalia
+</i>
+ <small>
+(Animals)
+</small>
+  ⛓<br>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</body>
+</html>
+

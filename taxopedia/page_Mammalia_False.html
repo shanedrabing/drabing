@@ -1,0 +1,2476 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8'>
+</meta>
+<style>
+/* Credits */
+
+/* Ilya Pestov: Original, https://codepen.io/Pestov/pen/BLpgm */
+/* Paul Smirnov: Horizontal, https://codepen.io/paulsmirnov/pen/dyyOLwa */
+/* Background pattern, https://projects.verou.me/css3patterns/ */
+/* Shane Drabing: Changed styling, added image hover effects */
+
+/* Variables */
+
+:root {
+    --border-radius: 3px;
+    --border-width: 2px;
+    --border-padding: 10px;
+    --transition-speed: 0.5s;
+    --bg-color1: hsl(210, 10%, 50%);
+    --bg-color2: hsl(210, 10%, 52%);
+    --box-color: hsl(0, 0%, 75%);
+    --border-color: hsl(0, 0%, 75%);
+    --text-color: hsl(0, 0%, 25%);
+    --box-color-hover: hsl(0, 0%, 100%);
+    --border-color-hover: hsl(0, 0%, 100%);
+    --text-color-hover: hsl(0, 0%, 0%);
+}
+
+/* Now the CSS */
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background:
+    radial-gradient(circle at 40px 20px, transparent 10px, var(--bg-color1) 10px, var(--bg-color1), 20px, transparent 20px, transparent) 0px 0px,
+    radial-gradient(circle at 0px 20px, transparent 10px, var(--bg-color1) 10px, var(--bg-color1), 20px, transparent 20px, transparent) 0px 30px;
+    background-color: var(--bg-color2);
+    background-size: 40px 60px;
+}
+
+.tree {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    padding-top: 50px;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-bottom: 250px;
+}
+
+.tree ul {
+    padding-left: var(--border-padding);
+    position: relative;
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+
+.tree li {
+    text-align: center;
+    list-style-type: none;
+    position: relative;
+    padding: var(--border-radius) 0 var(--border-radius) var(--border-padding);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+}
+
+/* We will use ::before and ::after to draw the connectors */
+
+.tree li::before, .tree li::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 50%;
+    border-left: var(--border-width) solid var(--border-color);
+    width: var(--border-padding);
+    height: 50%;
+}
+
+.tree li::after {
+    bottom: auto;
+    top: 50%;
+    border-top: var(--border-width) solid var(--border-color);
+}
+
+/* We need to remove left-right connectors from elements without 
+any siblings */
+
+.tree li:only-child::after, .tree li:only-child::before {
+    display: none;
+}
+
+/* Remove space from the top of single children */
+
+.tree li:only-child {
+    padding-left: 0;
+}
+
+/* Remove left connector from first child and 
+right connector from last child */
+
+.tree li:first-child::before, .tree li:last-child::after {
+    border: 0 none;
+}
+
+/* Adding back the vertical connector to the last nodes */
+
+.tree li:last-child::before {
+    border-bottom: var(--border-width) solid var(--border-color);
+    border-radius: 0 0 var(--border-radius) 0;
+    -webkit-border-radius: 0 0 var(--border-radius) 0;
+    -moz-border-radius: 0 0 var(--border-radius) 0;
+}
+
+.tree li:first-child::after {
+    border-radius: 0 0 0 var(--border-radius);
+    -webkit-border-radius: 0 0 0 var(--border-radius);
+    -moz-border-radius: 0 0 0 var(--border-radius);
+}
+
+/* Time to add downward connectors from parents */
+
+.tree ul ul::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    border-top: var(--border-width) solid var(--border-color);
+    width: var(--border-padding);
+    height: 0;
+}
+
+/* Box styles */
+
+.tree li div {
+    cursor: pointer;
+    border: var(--border-width) solid var(--border-color);
+    padding: 4px 8px;
+    text-decoration: none;
+    color: var(--text-color);
+    background-color: var(--box-color);
+    font-family: arial, verdana, tahoma;
+    font-size: 12px;
+    display: flex-end;
+    -ms-flex-item-align: center;
+    -ms-grid-row-align: center;
+    align-self: center;
+    border-radius: var(--border-radius);
+    -webkit-border-radius: var(--border-radius);
+    -moz-border-radius: var(--border-radius);
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+}
+
+/* Time for some hover effects */
+
+/* We will apply the hover effect the the lineage of the element also */
+
+.tree li div:hover, .tree li div:hover+ul li div {
+    background: var(--box-color-hover);
+    color: var(--text-color-hover);
+    border: var(--border-width) solid var(--border-color-hover);
+}
+
+/* Connector styles on hover */
+
+.tree li div:hover+ul li::after, .tree li div:hover+ul li::before, .tree li div:hover+ul::before, .tree li div:hover+ul ul::before {
+    border-color: var(--border-color-hover);
+}
+
+/* Image hover effects */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+    transition: all 0.75s;
+    -webkit-transition: all 0.75s;
+    -moz-transition: all 0.75s;
+    transition-timing-function: ease-out;
+    transition-delay: 75ms;
+
+    width: auto;
+    height: auto;
+    max-width: 0px;
+    max-height: 0px;
+    display: block;
+    visibility: hidden;
+}
+
+div.parent:hover img {
+    transition: all 0.5s;
+    transition-delay: 15ms;
+    max-width: 75vw;
+    max-height: 50vh;
+    visibility: visible;
+}
+</style>
+</head>
+<body>
+<div class='tree'>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Class
+</b>
+ <i>
+Mammalia
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Mammalia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Kangaroo_and_joey03.jpg/400px-Kangaroo_and_joey03.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+† Adapisoriculidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Adapisoriculidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Bustylus_marandati_lower_jaw_fragment.jpg/220px-Bustylus_marandati_lower_jaw_fragment.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+† Vincelestidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Zhelestidae' target='_blank'>
+<b>
+Family
+</b>
+ <i>
+† Zhelestidae
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Chiroptera
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Chiroptera' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Bat_range.png/640px-Bat_range.png' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Phyllostomidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Superfamily
+</b>
+ <i>
+Pteropodoidea
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Pteropodidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Megachiroptera' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Little_Red_Flying_Foxes.jpg/400px-Little_Red_Flying_Foxes.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Suborder
+</b>
+ <i>
+Microchiroptera
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Microchiroptera' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Big-eared-townsend-fledermaus.jpg/220px-Big-eared-townsend-fledermaus.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Suborder
+</b>
+ <i>
+Yangochiroptera
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Yangochiroptera' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Pipistrellus_pipistrellus01.jpg/220px-Pipistrellus_pipistrellus01.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Suborder
+</b>
+ <i>
+Yinpterochiroptera
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Yinpterochiroptera' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Golden_crowned_fruit_bat.jpg/180px-Golden_crowned_fruit_bat.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Carnivora' target='_blank'>
+<b>
+Order
+</b>
+ <i>
+Carnivora
+</i>
+  ⛓<br>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Canidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Phocidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Ursidae
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+† Symmetrodonta
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Spalacotheriida' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Zhangheotherium_quinquecuspidens.jpg/448px-Zhangheotherium_quinquecuspidens.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Superfamily
+</b>
+ <i>
+† Spalacotherioidea
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+† Spalacotheriidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Spalacotheriidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Yaverlestes.png/640px-Yaverlestes.png' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+† Zhangheotheriidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Zhangheotheriidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Zhangheotherium_quinquecuspidens.jpg/448px-Zhangheotherium_quinquecuspidens.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Perissodactyla
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Perissodactyla' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/The_Perissodactyl.jpg/640px-The_Perissodactyl.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Suborder
+</b>
+ <i>
+Hippomorpha
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Equidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Equidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Przewalski_26-9-2004-2.jpg/640px-Przewalski_26-9-2004-2.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Rodentia
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Rodentia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Rodent_collage.jpg/640px-Rodent_collage.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Suborder
+</b>
+ <i>
+Sciuromorpha
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Sciuridae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Squirrel' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Sciuridae.jpg/250px-Sciuridae.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Proboscidea
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Proboscidea' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/AfricanElephant.jpg/220px-AfricanElephant.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Elephantidae
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Order
+</b>
+ <i>
+† Amphitheriida
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+† Amphitheriidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Amphitheriida' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Amphitherium.jpg/220px-Amphitherium.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Order
+</b>
+ <i>
+† Peramura
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Peramura' target='_blank'>
+<b>
+Family
+</b>
+ <i>
+† Peramuridae
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Order
+</b>
+ <i>
+† Symmetrodonta (?)
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+† Chronoperatidae
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+('Chiroptera', 'Clade', ': ', 'Ferungulata')
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Scrotifera' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Scrotifera.png/464px-Scrotifera.png' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Pholidota
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Pholidota' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Manidae.jpg/439px-Manidae.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+† Cimolesta
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Cimolesta' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Palaeosinopa.jpg/640px-Palaeosinopa.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+† Embrithopoda
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Embrithopoda' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Arsinoitherium_zitteli.jpg/640px-Arsinoitherium_zitteli.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+† Leptictida
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Leptictida' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Leptictidium_auderiense_skeleton.JPG/640px-Leptictidium_auderiense_skeleton.JPG' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Superorder
+</b>
+ <i>
+† Dryolestoidea
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+† Dryolestida
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Dryolestida' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Henkeloth.jpg/640px-Henkeloth.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Paurodontidae' target='_blank'>
+<b>
+Family
+</b>
+ <i>
+† Paurodontidae
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Infraclass
+</b>
+ <i>
+Marsupialia
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Marsupialia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Marsupialia.jpg/480px-Marsupialia.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Paucituberculata
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Paucituberculata' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Caenolestes_sangay._Foto_Jorge_Brito.jpg/640px-Caenolestes_sangay._Foto_Jorge_Brito.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Superorder
+</b>
+ <i>
+Australidelphia
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Australidelphia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Sumpfwallabycele4.jpg/640px-Sumpfwallabycele4.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Diprotodontia
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Diprotodontia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Marsupialia_collage.png/220px-Marsupialia_collage.png' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Phascolarctidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Suborder
+</b>
+ <i>
+Macropodiformes
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Macropodiformes' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Smallwallaby.jpg/220px-Smallwallaby.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Macropodidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Kangaroo' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Kangaroo_Australia_01_11_2008_-_retouch.JPG/640px-Kangaroo_Australia_01_11_2008_-_retouch.JPG' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Potoroidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Potoroidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Bettongia_penicillata.jpg/220px-Bettongia_penicillata.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Hypsiprymnodontidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Hypsiprymnodontidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Hypsyprymnodon_moschatus.JPG/220px-Hypsyprymnodon_moschatus.JPG' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Balbaridae' target='_blank'>
+<b>
+Family
+</b>
+ <i>
+† Balbaridae
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Suborder
+</b>
+ <i>
+Phalangeriformes
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Phalangeriformes' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Trichosurus_vulpecula_1.jpg/366px-Trichosurus_vulpecula_1.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Superfamily
+</b>
+ <i>
+Petauroidea
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Petauroidea' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Sugies03_hp.jpg/220px-Sugies03_hp.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Petauridae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Petauridae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Sugies03_hp.jpg/220px-Sugies03_hp.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Tarsipedidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Acrobatidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Acrobatidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Beutelmaus_brehm.png/220px-Beutelmaus_brehm.png' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Pseudocheiridae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Pseudocheiridae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Pseudocheirus_peregrinus-Cayley.jpg/220px-Pseudocheirus_peregrinus-Cayley.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Superfamily
+</b>
+ <i>
+Phalangeroidea
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Phalangeroidea' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Cercartetus_nanus.jpg/402px-Cercartetus_nanus.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Phalangeridae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Phalangeridae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Brushtail_possum.jpg/220px-Brushtail_possum.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Ektopodontidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Burramyidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Burramyidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Cercartetus_nanus.jpg/402px-Cercartetus_nanus.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Suborder
+</b>
+ <i>
+Vombatiformes
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Vombatiformes' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Koala_climbing_tree.jpg/488px-Koala_climbing_tree.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Order
+</b>
+ <i>
+Notoryctemorphia
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Notoryctidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Notoryctemorphia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/PSM_V40_D672_The_new_mammal_notoryctes_typhlops.jpg/437px-PSM_V40_D672_The_new_mammal_notoryctes_typhlops.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Dasyuromorphia
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Dasyuromorphia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Dasyuromorphia_portraits.jpg/466px-Dasyuromorphia_portraits.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Microbiotheria
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Microbiotheria' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Monito_del_Monte_ps6.jpg/551px-Monito_del_Monte_ps6.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Peramelemorphia
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Peramelemorphia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Taxidermied_Bandicoot.jpg/220px-Taxidermied_Bandicoot.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Superorder
+</b>
+ <i>
+Ameridelphia
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Ameridelphia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Young_Virginia_Opossum.jpg/640px-Young_Virginia_Opossum.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Order
+</b>
+ <i>
+Didelphimorphia
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Didelphidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Didelphimorphia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Didelphis_virginiana_with_young.JPG/640px-Didelphis_virginiana_with_young.JPG' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subclass
+</b>
+ <i>
+Theria
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Theria' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Cohunu_koala%2C_2013%286%29.JPG/397px-Cohunu_koala%2C_2013%286%29.JPG' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Infraclass
+</b>
+ <i>
+Placentalia
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Placentalia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Mammal_Diversity_%28Placentalia%29.png/513px-Mammal_Diversity_%28Placentalia%29.png' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Superorder
+</b>
+ <i>
+Afrotheria
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Paenungulata' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Elephant_near_ndutu.jpg/450px-Elephant_near_ndutu.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Afrosoricida
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Afrosoricida' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Kleiner-igeltanrek-a.jpg/275px-Kleiner-igeltanrek-a.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Suborder
+</b>
+ <i>
+Chrysochloridea
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Chrysochloridea' target='_blank'>
+<b>
+Family
+</b>
+ <i>
+Chrysochloridae
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Suborder
+</b>
+ <i>
+Tenrecomorpha
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Tenrecomorpha' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Lowland_Streaked_Tenrec%2C_Mantadia%2C_Madagascar.jpg/609px-Lowland_Streaked_Tenrec%2C_Mantadia%2C_Madagascar.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Tenrecidae
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Order
+</b>
+ <i>
+incertae sedis
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+† Ocepeiidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+† Zalambdalestidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Zalambdalestidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Zalambdalestes_lechei.jpg/220px-Zalambdalestes_lechei.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Order
+</b>
+ <i>
+Macroscelidea
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Macroscelididae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Macroscelidea' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Rhynchocyon_petersi_from_side.jpg/640px-Rhynchocyon_petersi_from_side.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Order
+</b>
+ <i>
+Tubulidentata
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Orycteropodidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Tubulidentata' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Orycteropus_afer_stuffed.jpg/640px-Orycteropus_afer_stuffed.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Hyracoidea
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Hyracoidea' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Rock_hyrax_%28Procavia_capensis%29.jpg/640px-Rock_hyrax_%28Procavia_capensis%29.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Sirenia
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Sirenia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Sirenia_Diversity.jpg/480px-Sirenia_Diversity.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+† Desmostylia
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Desmostylia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Desmostylus_ROM.jpg/640px-Desmostylus_ROM.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Superorder
+</b>
+ <i>
+Xenarthra
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Xenarthra' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Xenarthra.jpg/587px-Xenarthra.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Cingulata
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Cingulata' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Cingulata2.jpg/496px-Cingulata2.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Pilosa
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Pilosa' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Pilosa_collage.png/275px-Pilosa_collage.png' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Magnorder
+</b>
+ <i>
+Boreoeutheria
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Boreoeutheria' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Laurasiatheria.png/464px-Laurasiatheria.png' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Eulipotyphla
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Eulipotyphla' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Eulipotyphla.jpg/634px-Eulipotyphla.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Talpidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Talpidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Talpidae_family_pictures.png/564px-Talpidae_family_pictures.png' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Erinaceidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Erinaceidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Igel.JPG/610px-Igel.JPG' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Solenodontidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Soricidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Soricidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Southern_short-tailed_shrew.jpg/220px-Southern_short-tailed_shrew.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+† Amphilemuridae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+† Nesophontidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Amphilemuridae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Amphilemuridae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Pholidocercus_hassiacus_34.JPG/640px-Pholidocercus_hassiacus_34.JPG' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+† Nyctitheriidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Nyctitheriidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Asionyctia_guoi.jpg/587px-Asionyctia_guoi.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Cetartiodactyla' target='_blank'>
+<b>
+Order
+</b>
+ <i>
+Artiodactyla
+</i>
+  ⛓<br>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Cervidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Infraorder
+</b>
+ <i>
+Cetacea
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Balaenopteridae
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+('Eulipotyphla', 'Clade', ': ', 'Scrotifera')
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Laurasiatheria' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Laurasiatheria.png/464px-Laurasiatheria.png' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Grandorder
+</b>
+ <i>
+Euarchonta
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Scandentia
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Scandentia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Spitzh%C3%B6rnchen.JPG/640px-Spitzh%C3%B6rnchen.JPG' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Ptilocercidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Tupaiidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Tupaiidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Tupaia_cf_javanica_050917_manc.jpg/220px-Tupaia_cf_javanica_050917_manc.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Mirorder
+</b>
+ <i>
+Primatomorpha
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Primates
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Primates' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Range_of_Non-human_Primates.png/640px-Range_of_Non-human_Primates.png' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+† Plesiadapidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Suborder
+</b>
+ <i>
+Strepsirrhini
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Strepsirrhini' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Suborder_Strepsirrhini.jpg/386px-Suborder_Strepsirrhini.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Superfamily
+</b>
+ <i>
+Lorisoidea
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Lorisidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Lorisidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Nycticebus_pygmaeus_004.jpg/640px-Nycticebus_pygmaeus_004.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Infraorder
+</b>
+ <i>
+Lemuriformes
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Superfamily
+</b>
+ <i>
+Lemuroidea
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Lemur' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Lemuroidea.jpg/387px-Lemuroidea.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Lemuridae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Lemuridae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Common_brown_lemur_%28Eulemur_fulvus%29_female_with_juvenile.jpg/400px-Common_brown_lemur_%28Eulemur_fulvus%29_female_with_juvenile.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+('Cheiromyidae ', 'Chiromyidae ', 'Genus: ', 'Aye-aye', 'Cheiromys', 'Cheyromys', 'Chiromys', 'Myslemur', 'Myspithecus', 'Psilodactylus', 'Scolecophagus', 'Species: ', 'daubentonii', 'laniger', 'psilodactylus')
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Parvorder
+</b>
+ <i>
+Catarrhini
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Suborder
+</b>
+ <i>
+Haplorhini
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Haplorhini' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Chapultepec_Zoo_-_Hamadryas_baboon.jpg/640px-Chapultepec_Zoo_-_Hamadryas_baboon.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Tarsiidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Tarsiidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Tarsier-GG.jpg/400px-Tarsier-GG.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Infraorder
+</b>
+ <i>
+Simiiformes
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Simian' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Old_%26_New_World_monkey_faces.JPG/800px-Old_%26_New_World_monkey_faces.JPG' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Atelidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Atelidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Atelidae_Family.jpg/481px-Atelidae_Family.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Callitrichidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Callitrichidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Callitrichinae_genus.jpg/438px-Callitrichinae_genus.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Cebidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Cebidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Capuchin_Costa_Rica.jpg/490px-Capuchin_Costa_Rica.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Superfamily
+</b>
+ <i>
+Hominoidea
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Ape' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Composite_image_of_male_chimpanzee_%28left%29_and_male_bonobo_%28right%29.jpg/640px-Composite_image_of_male_chimpanzee_%28left%29_and_male_bonobo_%28right%29.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Hominidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Hominidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Hominidae_%28extant_species%29.jpg/288px-Hominidae_%28extant_species%29.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Hylobatidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Hylobatidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Gibbon_collage.png/275px-Gibbon_collage.png' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+† Afropithecidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+† Pliobatidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Dendropithecidae' target='_blank'>
+<b>
+Family
+</b>
+ <i>
+† Dendropithecidae
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+† Proconsulidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Proconsulidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Proconsul_skeleton_reconstitution_%28University_of_Zurich%29.JPG/640px-Proconsul_skeleton_reconstitution_%28University_of_Zurich%29.JPG' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Superfamily
+</b>
+ <i>
+Cercopithecoidea
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Cercopithecidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Cercopithecidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Olive_baboon_Ngorongoro.jpg/528px-Olive_baboon_Ngorongoro.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Infraorder
+</b>
+ <i>
+Tarsiiformes
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Tarsiiformes' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Bohol_Tarsier.jpg/640px-Bohol_Tarsier.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Parvorder
+</b>
+ <i>
+Platyrrhini
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Superorder
+</b>
+ <i>
+Euarchontoglires
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Euarchontoglires' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Euarchontoglires_collage.jpg/480px-Euarchontoglires_collage.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Lagomorpha
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Lagomorpha' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Eastern_Cottontail.JPG/496px-Eastern_Cottontail.JPG' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Leporidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Leporidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arctic_Hare_1.jpg/601px-Arctic_Hare_1.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Ochotonidae
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Order
+</b>
+ <i>
+Dermoptera
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Cynocephalidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Dermoptera' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Colugo_%28Galeopterus_variegatus%2C_adult_female%29%2C_Central_Catchment_Area%2C_Singapore_-_20060618.jpg/480px-Colugo_%28Galeopterus_variegatus%2C_adult_female%29%2C_Central_Catchment_Area%2C_Singapore_-_20060618.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Infraclass
+</b>
+ <i>
+Eutheria
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+† Asioryctitheria
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Asioryctitheria' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Asioryctes_nemegtensis.jpg/250px-Asioryctes_nemegtensis.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subclass
+</b>
+ <i>
+Yinotheria
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Yinotheria' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Wild_Platypus_4.jpg/640px-Wild_Platypus_4.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Infraclass
+</b>
+ <i>
+Australosphenida
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Australosphenida' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Ameisenigel.jpg/220px-Ameisenigel.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+† Kollikodontidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Ausktribosphenidae' target='_blank'>
+<b>
+Family
+</b>
+ <i>
+† Ausktribosphenidae
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+† Henosferidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Henosferidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Ambondro_lingual.jpg/640px-Ambondro_lingual.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Order
+</b>
+ <i>
+Monotremata
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Monotreme' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Monotreme_collage.jpg/640px-Monotreme_collage.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subclass
+</b>
+ <i>
+Theriiformes
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Theriiformes' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Akha_cropped.png/220px-Akha_cropped.png' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Infraclass
+</b>
+ <i>
+† Allotheria
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Allotheria' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Ptilodus_skull_BW.jpg/220px-Ptilodus_skull_BW.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Superclass
+</b>
+ <i>
+Tetrapoda
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Tetrapod' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Tetrapoda.jpg/480px-Tetrapoda.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Phylum
+</b>
+ <i>
+Chordata
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Chordate' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Mammaliaformes.png/640px-Mammaliaformes.png' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Superphylum
+</b>
+ <i>
+Deuterostomia
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Subkingdom
+</b>
+ <i>
+Eumetazoa
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Animal' target='_blank'>
+<b>
+Kingdom
+</b>
+ <i>
+Animalia
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</body>
+</html>
+

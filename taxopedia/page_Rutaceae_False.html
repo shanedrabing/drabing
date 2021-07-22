@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8'>
+</meta>
+<style>
+/* Credits */
+
+/* Ilya Pestov: Original, https://codepen.io/Pestov/pen/BLpgm */
+/* Paul Smirnov: Horizontal, https://codepen.io/paulsmirnov/pen/dyyOLwa */
+/* Background pattern, https://projects.verou.me/css3patterns/ */
+/* Shane Drabing: Changed styling, added image hover effects */
+
+/* Variables */
+
+:root {
+    --border-radius: 3px;
+    --border-width: 2px;
+    --border-padding: 10px;
+    --transition-speed: 0.5s;
+    --bg-color1: hsl(210, 10%, 50%);
+    --bg-color2: hsl(210, 10%, 52%);
+    --box-color: hsl(0, 0%, 75%);
+    --border-color: hsl(0, 0%, 75%);
+    --text-color: hsl(0, 0%, 25%);
+    --box-color-hover: hsl(0, 0%, 100%);
+    --border-color-hover: hsl(0, 0%, 100%);
+    --text-color-hover: hsl(0, 0%, 0%);
+}
+
+/* Now the CSS */
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background:
+    radial-gradient(circle at 40px 20px, transparent 10px, var(--bg-color1) 10px, var(--bg-color1), 20px, transparent 20px, transparent) 0px 0px,
+    radial-gradient(circle at 0px 20px, transparent 10px, var(--bg-color1) 10px, var(--bg-color1), 20px, transparent 20px, transparent) 0px 30px;
+    background-color: var(--bg-color2);
+    background-size: 40px 60px;
+}
+
+.tree {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    padding-top: 50px;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-bottom: 250px;
+}
+
+.tree ul {
+    padding-left: var(--border-padding);
+    position: relative;
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+
+.tree li {
+    text-align: center;
+    list-style-type: none;
+    position: relative;
+    padding: var(--border-radius) 0 var(--border-radius) var(--border-padding);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+}
+
+/* We will use ::before and ::after to draw the connectors */
+
+.tree li::before, .tree li::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 50%;
+    border-left: var(--border-width) solid var(--border-color);
+    width: var(--border-padding);
+    height: 50%;
+}
+
+.tree li::after {
+    bottom: auto;
+    top: 50%;
+    border-top: var(--border-width) solid var(--border-color);
+}
+
+/* We need to remove left-right connectors from elements without 
+any siblings */
+
+.tree li:only-child::after, .tree li:only-child::before {
+    display: none;
+}
+
+/* Remove space from the top of single children */
+
+.tree li:only-child {
+    padding-left: 0;
+}
+
+/* Remove left connector from first child and 
+right connector from last child */
+
+.tree li:first-child::before, .tree li:last-child::after {
+    border: 0 none;
+}
+
+/* Adding back the vertical connector to the last nodes */
+
+.tree li:last-child::before {
+    border-bottom: var(--border-width) solid var(--border-color);
+    border-radius: 0 0 var(--border-radius) 0;
+    -webkit-border-radius: 0 0 var(--border-radius) 0;
+    -moz-border-radius: 0 0 var(--border-radius) 0;
+}
+
+.tree li:first-child::after {
+    border-radius: 0 0 0 var(--border-radius);
+    -webkit-border-radius: 0 0 0 var(--border-radius);
+    -moz-border-radius: 0 0 0 var(--border-radius);
+}
+
+/* Time to add downward connectors from parents */
+
+.tree ul ul::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    border-top: var(--border-width) solid var(--border-color);
+    width: var(--border-padding);
+    height: 0;
+}
+
+/* Box styles */
+
+.tree li div {
+    cursor: pointer;
+    border: var(--border-width) solid var(--border-color);
+    padding: 4px 8px;
+    text-decoration: none;
+    color: var(--text-color);
+    background-color: var(--box-color);
+    font-family: arial, verdana, tahoma;
+    font-size: 12px;
+    display: flex-end;
+    -ms-flex-item-align: center;
+    -ms-grid-row-align: center;
+    align-self: center;
+    border-radius: var(--border-radius);
+    -webkit-border-radius: var(--border-radius);
+    -moz-border-radius: var(--border-radius);
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+}
+
+/* Time for some hover effects */
+
+/* We will apply the hover effect the the lineage of the element also */
+
+.tree li div:hover, .tree li div:hover+ul li div {
+    background: var(--box-color-hover);
+    color: var(--text-color-hover);
+    border: var(--border-width) solid var(--border-color-hover);
+}
+
+/* Connector styles on hover */
+
+.tree li div:hover+ul li::after, .tree li div:hover+ul li::before, .tree li div:hover+ul::before, .tree li div:hover+ul ul::before {
+    border-color: var(--border-color-hover);
+}
+
+/* Image hover effects */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+    transition: all 0.75s;
+    -webkit-transition: all 0.75s;
+    -moz-transition: all 0.75s;
+    transition-timing-function: ease-out;
+    transition-delay: 75ms;
+
+    width: auto;
+    height: auto;
+    max-width: 0px;
+    max-height: 0px;
+    display: block;
+    visibility: hidden;
+}
+
+div.parent:hover img {
+    transition: all 0.5s;
+    transition-delay: 15ms;
+    max-width: 75vw;
+    max-height: 50vh;
+    visibility: visible;
+}
+</style>
+</head>
+<body>
+<div class='tree'>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+<br>
+<i>
+Rutaceae
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Rutaceae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Skimmia_reevesiana2.jpg/220px-Skimmia_reevesiana2.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+<br>
+<i>
+Flindersia
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Flindersia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Flindersia_brayleyana_IMG_2048.jpg/640px-Flindersia_brayleyana_IMG_2048.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+F. australis
+</i>
+<br>
+<small>
+(Crow's ash)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Flindersia_australis' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Flindersia_australis_flowers.jpg/220px-Flindersia_australis_flowers.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+F. brayleyana
+</i>
+<br>
+<small>
+(Queensland maple)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Flindersia_brayleyana' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Flindersia_brayleyana_IMG_2048.jpg/640px-Flindersia_brayleyana_IMG_2048.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+<br>
+<i>
+Micromelum
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Micromelum' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Micromelum_minutum_flowers_and_foliage.jpg/484px-Micromelum_minutum_flowers_and_foliage.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+M. minutum
+</i>
+<br>
+<small>
+(Limeberry)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Micromelum_minutum' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Micromelum_minutum_fruit_and_foliage.jpg/430px-Micromelum_minutum_fruit_and_foliage.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subfamily
+</b>
+<br>
+<i>
+Aurantioideae
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Aurantioideae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Swinglea_glutinosa_Blanco1.124.png/403px-Swinglea_glutinosa_Blanco1.124.png'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Genus
+</b>
+<br>
+<i>
+Merrillia
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Merrillia' target='_blank'>
+<b>
+Species
+</b>
+<br>
+<i>
+M. caloxylon
+</i>
+<br>
+<small>
+(Merrillia)
+</small>
+<br>
+ ⛓<br>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Tribe
+</b>
+<br>
+<i>
+Citreae
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citreae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Citrus_aurantium.jpg/640px-Citrus_aurantium.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Subtribe
+</b>
+<br>
+<i>
+Citrinae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+<br>
+<i>
+Citrus
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citrus' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/OrangeBloss_wb.jpg/220px-OrangeBloss_wb.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+C. cavaleriei
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citrus_cavaleriei' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/7/7e/Ichangfruit.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+C. hystrix
+</i>
+<br>
+<small>
+(Micrantha, Kaffir lime)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citrus_micrantha' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Citrus_hystrix_dsc07772.jpg/640px-Citrus_hystrix_dsc07772.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+C. japonica
+</i>
+<br>
+<small>
+(Kumquat)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Kumquat' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Kumquat.jpeg/220px-Kumquat.jpeg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+C. limon
+</i>
+<br>
+<small>
+(Lemon)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Lemon' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/P1030323.JPG/640px-P1030323.JPG'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+C. maxima
+</i>
+<br>
+<small>
+(Pomelo)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Pomelo' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Pomelo_fruit.jpg/640px-Pomelo_fruit.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+C. medica
+</i>
+<br>
+<small>
+(Citron)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Citron' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Chinesische_Zedrat_Zitrone.jpg/640px-Chinesische_Zedrat_Zitrone.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+C. reticulata
+</i>
+<br>
+<small>
+(Mandarin orange)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Mandarin_orange' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Citrus_reticulata_April_2013_Nordbaden.JPG/450px-Citrus_reticulata_April_2013_Nordbaden.JPG'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+C. tangerina
+</i>
+<br>
+<small>
+(Tangerine)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Tangerine' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/TangerineFruit.jpg/220px-TangerineFruit.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+C. × aurantiifolia
+</i>
+<br>
+<small>
+(Key lime)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Key_lime' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Ripekeylime.jpg/522px-Ripekeylime.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+C. × aurantium
+</i>
+<br>
+<small>
+(Citrus)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Bitter_orange' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Citrus_aurantium.jpg/640px-Citrus_aurantium.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+C. × latifolia
+</i>
+<br>
+<small>
+(Persian lime)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Persian_lime' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Starr-140117-3997-Citrus_latifolia-Tahitian_fruit_and_leaves-Hawea_Pl_Olinda-Maui_%2824612312943%29.jpg/640px-Starr-140117-3997-Citrus_latifolia-Tahitian_fruit_and_leaves-Hawea_Pl_Olinda-Maui_%2824612312943%29.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+C. × paradisi
+</i>
+<br>
+<small>
+(Grapefruit)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Grapefruit' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Grapefruits_-_whole-halved-segments.jpg/640px-Grapefruits_-_whole-halved-segments.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Tribe
+</b>
+<br>
+<i>
+Clauseneae
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Clauseneae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Micromelum_minutum_flowers_and_foliage.jpg/484px-Micromelum_minutum_flowers_and_foliage.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+<br>
+<i>
+Clausena
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Clausena' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Clausena_lansium.jpg/483px-Clausena_lansium.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Clausena_excavata' target='_blank'>
+<b>
+Species
+</b>
+<br>
+<i>
+C. excavata
+</i>
+<br>
+ ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+C. lansium
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Clausena_lansium' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Clausena_lansium.jpg/483px-Clausena_lansium.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+<br>
+<i>
+Glycosmis
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Glycosmis' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Glycosmis_pentaphylla_07.JPG/453px-Glycosmis_pentaphylla_07.JPG'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+G. pentaphylla
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Glycosmis_pentaphylla' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Glycosmis_pentaphylla_plant.jpg/456px-Glycosmis_pentaphylla_plant.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+<br>
+<i>
+Murraya
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Murraya' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Orange_Jasmine_%28Murraya_paniculata%29.JPG/400px-Orange_Jasmine_%28Murraya_paniculata%29.JPG'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+M. paniculata
+</i>
+<br>
+<small>
+(Orange jasmine)
+</small>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Murraya_paniculata' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Murraya_paniculata_05.jpg/577px-Murraya_paniculata_05.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subfamily
+</b>
+<br>
+<i>
+Rutoideae
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Rutoideae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Ruta_chalepensis11.jpg/450px-Ruta_chalepensis11.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Tribe
+</b>
+<br>
+<i>
+Ruteae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+<br>
+<i>
+Ruta
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Ruta' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Ruta_chalepensis11.jpg/450px-Ruta_chalepensis11.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+R. chalepensis
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Ruta_chalepensis' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Ruta_chalepensis_ce.JPG/450px-Ruta_chalepensis_ce.JPG'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+R. graveolens
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Ruta_graveolens' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Die_Weinraute%2C_lat._Ruta_graveolens%2C_Pflanze_mit_den_gelben_Bl%C3%BCten.jpg/640px-Die_Weinraute%2C_lat._Ruta_graveolens%2C_Pflanze_mit_den_gelben_Bl%C3%BCten.jpg'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+R. patavina
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Ruta_patavina' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Flora_Europaea_inchoata_%28Pl._47%29_%286032633189%29.jpg/337px-Flora_Europaea_inchoata_%28Pl._47%29_%286032633189%29.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subfamily
+</b>
+<br>
+<i>
+Toddalioideae
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Toddalioideae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Skimmia.JPG/640px-Skimmia.JPG'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+<br>
+<i>
+Skimmia
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Skimmia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Skimmia_reevesiana1.jpg/220px-Skimmia_reevesiana1.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Species
+</b>
+<br>
+<i>
+S. japonica
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Skimmia_japonica' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Skimmia_reevesiana1.jpg/220px-Skimmia_reevesiana1.jpg'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Subfamily
+</b>
+<br>
+<i>
+Dictyolomatoideae
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+<br>
+<i>
+Dictyoloma
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Dictyoloma' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Dictyoloma_incanescens.png/407px-Dictyoloma_incanescens.png'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subfamily
+</b>
+<br>
+<i>
+Flindersioideae
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Flindersioideae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Flindersia_australis.jpg/220px-Flindersia_australis.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Genus
+</b>
+<br>
+<i>
+Chloroxylon
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Chloroxylon' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Chloroxylon_swietenia_01.JPG/640px-Chloroxylon_swietenia_01.JPG'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Subfamily
+</b>
+<br>
+<i>
+Spathelioideae
+</i>
+<br>
+ 👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Spathelioideae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Cneorum_tricoccon.jpg/640px-Cneorum_tricoccon.jpg'>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Spathelia' target='_blank'>
+<b>
+Genus
+</b>
+<br>
+<i>
+Spathelia
+</i>
+<br>
+ ⛓<br>
+</a>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Order
+</b>
+<br>
+<i>
+Sapindales
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Kingdom
+</b>
+<br>
+<i>
+Plantae
+</i>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</body>
+</html>
+

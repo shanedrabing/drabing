@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8'>
+</meta>
+<style>
+/* Credits */
+
+/* Ilya Pestov: Original, https://codepen.io/Pestov/pen/BLpgm */
+/* Paul Smirnov: Horizontal, https://codepen.io/paulsmirnov/pen/dyyOLwa */
+/* Background pattern, https://projects.verou.me/css3patterns/ */
+/* Shane Drabing: Changed styling, added image hover effects */
+
+/* Variables */
+
+:root {
+    --border-radius: 3px;
+    --border-width: 2px;
+    --border-padding: 10px;
+    --transition-speed: 0.5s;
+    --bg-color1: hsl(210, 10%, 50%);
+    --bg-color2: hsl(210, 10%, 52%);
+    --box-color: hsl(0, 0%, 75%);
+    --border-color: hsl(0, 0%, 75%);
+    --text-color: hsl(0, 0%, 25%);
+    --box-color-hover: hsl(0, 0%, 100%);
+    --border-color-hover: hsl(0, 0%, 100%);
+    --text-color-hover: hsl(0, 0%, 0%);
+}
+
+/* Now the CSS */
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background:
+    radial-gradient(circle at 40px 20px, transparent 10px, var(--bg-color1) 10px, var(--bg-color1), 20px, transparent 20px, transparent) 0px 0px,
+    radial-gradient(circle at 0px 20px, transparent 10px, var(--bg-color1) 10px, var(--bg-color1), 20px, transparent 20px, transparent) 0px 30px;
+    background-color: var(--bg-color2);
+    background-size: 40px 60px;
+}
+
+.tree {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    padding-top: 50px;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-bottom: 250px;
+}
+
+.tree ul {
+    padding-left: var(--border-padding);
+    position: relative;
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+
+.tree li {
+    text-align: center;
+    list-style-type: none;
+    position: relative;
+    padding: var(--border-radius) 0 var(--border-radius) var(--border-padding);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+}
+
+/* We will use ::before and ::after to draw the connectors */
+
+.tree li::before, .tree li::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 50%;
+    border-left: var(--border-width) solid var(--border-color);
+    width: var(--border-padding);
+    height: 50%;
+}
+
+.tree li::after {
+    bottom: auto;
+    top: 50%;
+    border-top: var(--border-width) solid var(--border-color);
+}
+
+/* We need to remove left-right connectors from elements without 
+any siblings */
+
+.tree li:only-child::after, .tree li:only-child::before {
+    display: none;
+}
+
+/* Remove space from the top of single children */
+
+.tree li:only-child {
+    padding-left: 0;
+}
+
+/* Remove left connector from first child and 
+right connector from last child */
+
+.tree li:first-child::before, .tree li:last-child::after {
+    border: 0 none;
+}
+
+/* Adding back the vertical connector to the last nodes */
+
+.tree li:last-child::before {
+    border-bottom: var(--border-width) solid var(--border-color);
+    border-radius: 0 0 var(--border-radius) 0;
+    -webkit-border-radius: 0 0 var(--border-radius) 0;
+    -moz-border-radius: 0 0 var(--border-radius) 0;
+}
+
+.tree li:first-child::after {
+    border-radius: 0 0 0 var(--border-radius);
+    -webkit-border-radius: 0 0 0 var(--border-radius);
+    -moz-border-radius: 0 0 0 var(--border-radius);
+}
+
+/* Time to add downward connectors from parents */
+
+.tree ul ul::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    border-top: var(--border-width) solid var(--border-color);
+    width: var(--border-padding);
+    height: 0;
+}
+
+/* Box styles */
+
+.tree li div {
+    cursor: pointer;
+    border: var(--border-width) solid var(--border-color);
+    padding: 4px 8px;
+    text-decoration: none;
+    color: var(--text-color);
+    background-color: var(--box-color);
+    font-family: arial, verdana, tahoma;
+    font-size: 12px;
+    display: flex-end;
+    -ms-flex-item-align: center;
+    -ms-grid-row-align: center;
+    align-self: center;
+    border-radius: var(--border-radius);
+    -webkit-border-radius: var(--border-radius);
+    -moz-border-radius: var(--border-radius);
+    transition: all var(--transition-speed);
+    -webkit-transition: all var(--transition-speed);
+    -moz-transition: all var(--transition-speed);
+}
+
+/* Time for some hover effects */
+
+/* We will apply the hover effect the the lineage of the element also */
+
+.tree li div:hover, .tree li div:hover+ul li div {
+    background: var(--box-color-hover);
+    color: var(--text-color-hover);
+    border: var(--border-width) solid var(--border-color-hover);
+}
+
+/* Connector styles on hover */
+
+.tree li div:hover+ul li::after, .tree li div:hover+ul li::before, .tree li div:hover+ul::before, .tree li div:hover+ul ul::before {
+    border-color: var(--border-color-hover);
+}
+
+/* Image hover effects */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+    transition: all 0.75s;
+    -webkit-transition: all 0.75s;
+    -moz-transition: all 0.75s;
+    transition-timing-function: ease-out;
+    transition-delay: 75ms;
+
+    width: auto;
+    height: auto;
+    max-width: 0px;
+    max-height: 0px;
+    display: block;
+    visibility: hidden;
+}
+
+div.parent:hover img {
+    transition: all 0.5s;
+    transition-delay: 15ms;
+    max-width: 75vw;
+    max-height: 50vh;
+    visibility: visible;
+}
+</style>
+</head>
+<body>
+<div class='tree'>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Suborder
+</b>
+ <i>
+Feliformia
+</i>
+ <small>
+(Feliforms, Aeluroidea)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Feliformia' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Feliform_portraits.jpg/385px-Feliform_portraits.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Eupleridae
+</i>
+ <small>
+(Euplerids)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Eupleridae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Eupleridae.png/418px-Eupleridae.png' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Felidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Felidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Felidae_range.png/800px-Felidae_range.png' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a>
+<b>
+Family
+</b>
+ <i>
+Nandiniidae
+</i>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+† Barbourofelidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Barbourofelidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Barbourofelis_loveorum.jpg/640px-Barbourofelis_loveorum.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Lophocyonidae' target='_blank'>
+<b>
+Family
+</b>
+ <i>
+† Lophocyonidae
+</i>
+  ⛓<br>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+† Nimravidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Nimravidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Hoplophoneus.jpg/546px-Hoplophoneus.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+† Percrocutidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Percrocutidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Dinocrocuta.jpg/640px-Dinocrocuta.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+† Stenoplesictidae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Stenoplesictidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Stenoplesictis_cayluxi_mandibles.JPG/640px-Stenoplesictis_cayluxi_mandibles.JPG' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Infraorder
+</b>
+ <i>
+Viverroidea
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Viverroidea' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Viverroidea.jpg/639px-Viverroidea.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Hyaenidae
+</i>
+ <small>
+(Hyenas)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Hyaenidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hyaenidae_Diversity.jpg/638px-Hyaenidae_Diversity.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Viverridae
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Viverridae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Viverrids_mosaic.jpg/290px-Viverrids_mosaic.jpg' loading='lazy'>
+</a>
+</div>
+</li>
+<li>
+<div class='parent' onclick=''>
+<b>
+Superfamily
+</b>
+ <i>
+Herpestoidea
+</i>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Herpestoidea' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Herpestoidea.jpg/267px-Herpestoidea.jpg' loading='lazy'>
+</a>
+</div>
+<ul>
+<li>
+<div class='parent' onclick=''>
+<b>
+Family
+</b>
+ <i>
+Herpestidae
+</i>
+ <small>
+(Mongoose)
+</small>
+  👁 ⛓<br>
+<a href='https://en.wikipedia.org/wiki/Herpestidae' target='_blank'>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Mongoose_collection.png/434px-Mongoose_collection.png' loading='lazy'>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Carnivora' target='_blank'>
+<b>
+Order
+</b>
+ <i>
+Carnivora
+</i>
+ <small>
+(Carnivorans)
+</small>
+  ⛓<br>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Mammal' target='_blank'>
+<b>
+Class
+</b>
+ <i>
+Mammalia
+</i>
+ <small>
+(Mammals)
+</small>
+  ⛓<br>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Superclass
+</b>
+ <i>
+Tetrapoda
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Chordate' target='_blank'>
+<b>
+Phylum
+</b>
+ <i>
+Chordata
+</i>
+ <small>
+(Chordates)
+</small>
+  ⛓<br>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Superphylum
+</b>
+ <i>
+Deuterostomia
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a>
+<b>
+Subkingdom
+</b>
+ <i>
+Eumetazoa
+</i>
+</a>
+</div>
+<ul>
+<li>
+<div onclick=''>
+<a href='https://en.wikipedia.org/wiki/Animal' target='_blank'>
+<b>
+Kingdom
+</b>
+ <i>
+Animalia
+</i>
+ <small>
+(Animals)
+</small>
+  ⛓<br>
+</a>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</body>
+</html>
+
