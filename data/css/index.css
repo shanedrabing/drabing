@@ -6,16 +6,16 @@
 
 body {
     background: black url(../image/galaxy.jpg);
-    background-size: 100% 100vh;
+    background-size: 125vw 125vh;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center; 
     overflow: hidden;
-	transition: all 16s ease-out;
+	transition: all 16s ease-in-out;
 }
 
 body#opened {
-    background-size: 200% 200vh;
+    background-size: 100vw 100vh;
 }
 
 .container {
