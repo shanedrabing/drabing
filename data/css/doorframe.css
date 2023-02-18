@@ -1,0 +1,63 @@
+.doorframe {
+	margin: 1em auto;
+	perspective: 1200px;
+	background: black url(../jpg/unbothered.jpg) no-repeat center;
+	background-size: cover;
+	width: 60vh;
+	height: 60vh;
+	display: flex;
+	transform-style: preserve-3d;
+	box-shadow: inset 0px 0px 30px black,
+		inset 0px 0px 15px black,
+		0 0 30px black,
+		0 0 120px black;
+}
+
+.doorL {
+	transform-origin: left center;
+	background: black url(../jpg/doorL.jpg) no-repeat center;
+}
+
+.doorR {
+	transform-origin: right center;
+	background: black url(../jpg/doorR.jpg) no-repeat center;
+}
+
+.doorL::before {
+	background: black url(../jpg/doorR.jpg) no-repeat center;
+}
+
+.doorR::before {
+	background: black url(../jpg/doorL.jpg) no-repeat center;
+}
+
+.doorL, .doorR {
+	flex-grow: 1;
+	background-size: 100% 100%;
+	position: relative;
+	backface-visibility: hidden;
+	transform-style: preserve-3d;
+	transition: all 0.5s;
+}
+
+.doorL::before, .doorR::before {
+	background-size: 100% 100%;
+	box-shadow: 0 0 30px black;
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	backface-visibility: hidden;
+	transform-style: preserve-3d;
+	transform: rotateY(180deg);
+}
+
+.doorframe:hover .doorL {
+	transform: rotate3d(0, 1, 0, -135deg);
+}
+
+.doorframe:hover .doorR {
+	transform: rotate3d(0, 1, 0, 135deg);
+}
