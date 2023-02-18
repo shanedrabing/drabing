@@ -1,7 +1,7 @@
 .doorframe {
 	margin: 1em auto;
 	perspective: 1200px;
-	background: black url(../jpg/unbothered.jpg) no-repeat center;
+	background: black url(../image/unbothered.jpg) no-repeat center;
 	background-size: cover;
 	width: 60vh;
 	height: 60vh;
@@ -15,20 +15,20 @@
 
 .doorL {
 	transform-origin: left center;
-	background: black url(../jpg/doorL.jpg) no-repeat center;
+	background: black url(../image/doorL.jpg) no-repeat center;
 }
 
 .doorR {
 	transform-origin: right center;
-	background: black url(../jpg/doorR.jpg) no-repeat center;
+	background: black url(../image/doorR.jpg) no-repeat center;
 }
 
 .doorL::before {
-	background: black url(../jpg/doorR.jpg) no-repeat center;
+	background: black url(../image/doorR.jpg) no-repeat center;
 }
 
 .doorR::before {
-	background: black url(../jpg/doorL.jpg) no-repeat center;
+	background: black url(../image/doorL.jpg) no-repeat center;
 }
 
 .doorL, .doorR {
@@ -37,7 +37,7 @@
 	position: relative;
 	backface-visibility: hidden;
 	transform-style: preserve-3d;
-	transition: all 0.5s;
+	transition: all 18s;
 }
 
 .doorL::before, .doorR::before {
@@ -54,10 +54,10 @@
 	transform: rotateY(180deg);
 }
 
-.doorframe:hover .doorL {
+.doorL#opened {
 	transform: rotate3d(0, 1, 0, -135deg);
 }
 
-.doorframe:hover .doorR {
+.doorR#opened {
 	transform: rotate3d(0, 1, 0, 135deg);
 }

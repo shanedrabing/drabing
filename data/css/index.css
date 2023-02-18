@@ -5,11 +5,11 @@
 }
 
 body {
-    background-image: url(../jpg/galaxy.jpg);
-    background-repeat: none;
+    background: black url(../image/galaxy.jpg);
     background-size: cover;
     height: 100%;
     width: 100%;
+    overflow: hidden;
 }
 
 .container {

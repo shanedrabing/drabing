@@ -3,16 +3,19 @@
 
 <head>
   <!-- favicons -->
-  <link rel="shortcut icon" type="image/png" href="/data/png/icon-192x192.png">
-  <link rel="shortcut icon" sizes="192x192" href="/data/png/icon-192x192.png">
-  <link rel="apple-touch-icon" href="/data/png/icon-192x192.png">
+  <link rel="shortcut icon" type="image/png" href="data/image/icon-192x192.png">
+  <link rel="shortcut icon" sizes="192x192" href="data/image/icon-192x192.png">
+  <link rel="apple-touch-icon" href="data/image/icon-192x192.png">
 
   <!-- favicon update -->
-  <link rel="icon" href="/data/png/icon-192x192.png?v=2" />
+  <link rel="icon" href="data/image/icon-192x192.png?v=2" />
 
   <!-- style sheet -->
-  <link rel="stylesheet" href="./data/css/index.css">
-  <link rel="stylesheet" href="./data/css/doorframe.css">
+  <link rel="stylesheet" href="data/css/index.css">
+  <link rel="stylesheet" href="data/css/doorframe.css">
+
+  <!-- page scripts -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
 </head>
 
 <body>
@@ -24,6 +27,12 @@
         <div class="doorR"></div>
       </div>
     </a>
+  
+    <audio id="player">
+      <source src="data/audio/deepnote.mp3"></source>
+    </audio>
+    
+    <script src="data/js/deepnote.js"></script>
   </div>
 
 </body>
