@@ -3,15 +3,15 @@
 	perspective: 1200px;
 	background: black url(../image/unbothered.jpg) no-repeat center;
 	background-size: cover;
-	width: 15vh;
-	height: 15vh;
+	width: 40vh;
+	height: 40vh;
 	display: flex;
 	transform-style: preserve-3d;
 	box-shadow: inset 0px 0px 30px black,
 		inset 0px 0px 15px black,
 		0 0 30px black,
 		0 0 120px black;
-	transition: all 16s ease-out;
+	transition: all 16s ease-in-out;
 }
 
 .doorL {
