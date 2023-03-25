@@ -11,25 +11,41 @@
   <link rel="icon" href="data/image/icon-192x192.png?v=2.0.1" />
 
   <!-- style sheet -->
-  <!-- <link rel="stylesheet" href="data/css/index.css?v=2.0.1"> -->
+  <link rel="stylesheet" href="data/css/home.css?v=2.0.1">
+
+  <!-- page scripts -->
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
 
   <!-- page meta -->
   <meta charset="UTF-8">
   <meta name="author" content="Shane Drabing">
 
   <!-- page title -->
-  <title>Shane Runs the Gamut</title>
+  <title>Shane's Domain</title>
 </head>
 
 <body>
 
-  <h1>
-    Shane Runs the Gamut
-  </h1>
+  <!-- for centering -->
+  <div class="container">
 
-  <p>
-    Howdy! My name is Shane :-)
-  </p>
+    <!-- header -->
+    <div class="spinner">
+      <h1>
+        Shane's Domain
+      </h1>
+    </div>
+
+    <!-- audio player, hidden -->
+    <audio id="player" preload="auto">
+      <source src="data/audio/opus_no1.mp3">
+      </source>
+    </audio>
+
+    <!-- script must load after elements -->
+    <script src="data/js/opus_no1.js?v=2.0.1"></script>
+
+  </div>
 
 </body>
 

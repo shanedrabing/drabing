@@ -1,0 +1,55 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body#opened {
+    background-size: 100% 100vh;
+}
+
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -55%);
+    -ms-transform: translate(-50%, -55%);
+    -webkit-transform: translate(-50%, -55%);
+}
+
+div {
+    cursor: pointer;
+}
+
+.spinner {
+    height: 3em;
+    width: 20em;
+    position: relative;
+    background-color: cyan;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    transition: all 12s ease-in-out;
+}
+
+.spinner h1 {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.spinner::after {
+    content: "";
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    background-color: magenta;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    transform: rotateY(180deg);
+}
+
+
+.spinner#opened {
+    transform: rotate3d(0, 1, 0, 360deg);
+}
