@@ -6,7 +6,7 @@
 
 body {
     background: black url(../image/galaxy.jpg);
-    background-size: 125% 125vh;
+    background-size: 125vw;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center; 
@@ -15,7 +15,7 @@ body {
 }
 
 body#opened {
-    background-size: 100% 100vh;
+    background-size: 100vw;
 }
 
 .container {
