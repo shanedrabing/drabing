@@ -25,10 +25,11 @@ body::before {
     bottom: 0;
     right: 0;
     position: absolute;  
-    background-repeat: no-repeat;  
-    background-position: 0% 0%;
-    background-size: 100% 100%;
-    background-image: url(../image/winter.jpg);
+    background-repeat: no-repeat;
+    background-attachment: contain;
+    background-position: center; 
+    background-size: 100%;
+    background-image: url(../image/desert.jpg);
     transition: opacity 12s ease-in-out;
 }
 
@@ -44,9 +45,10 @@ body::after {
     bottom: 0;
     right: 0;
     position: absolute;  
-    background-repeat: no-repeat;  
-    background-position: 0% 0%;
-    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-attachment: contain;
+    background-position: center; 
+    background-size: 100%;
     z-index: -1;
 }
 
