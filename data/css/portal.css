@@ -1,0 +1,41 @@
+.frameB, .frameL, .frameT, .frameR {
+    z-index: 2;
+    cursor: pointer;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    transition: all 14s ease-in;
+}
+
+.frameB {
+    bottom: 50vh;
+}
+
+.frameL {
+    right: 50vw;
+}
+
+.frameT {
+    top: 50vh;
+}
+
+.frameR {
+    left: 50vw;
+}
+
+.frameB#opened {
+    bottom: 100vh;
+}
+
+.frameL#opened {
+    right: 100vw;
+}
+
+.frameT#opened {
+    top: 100vh;
+}
+
+.frameR#opened {
+    left: 100vw;
+}

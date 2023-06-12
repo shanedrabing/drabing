@@ -2,52 +2,56 @@
 <html>
 
 <head>
-  <!-- favicons -->
-  <link rel="shortcut icon" type="image/png" href="data/image/icon-192x192.png">
-  <link rel="shortcut icon" sizes="192x192" href="data/image/icon-192x192.png">
-  <link rel="apple-touch-icon" href="data/image/icon-192x192.png">
+    <!-- favicons -->
+    <link rel="shortcut icon" type="image/png" href="data/image/icon-192x192.png">
+    <link rel="shortcut icon" sizes="192x192" href="data/image/icon-192x192.png">
+    <link rel="apple-touch-icon" href="data/image/icon-192x192.png">
 
-  <!-- favicon update -->
-  <link rel="icon" href="data/image/icon-192x192.png?v=2.0.2" />
+    <!-- favicon update -->
+    <link rel="icon" href="data/image/icon-192x192.png?v=2.0.2" />
 
-  <!-- style sheet -->
-  <link rel="stylesheet" href="data/css/index.css?v=2.0.2">
-  <link rel="stylesheet" href="data/css/doorframe.css?v=2.0.2">
+    <!-- style sheet -->
+    <link rel="stylesheet" href="data/css/portal.css?v=2.0.2">
+    <link rel="stylesheet" href="data/css/index.css?v=2.0.2">
 
-  <!-- page scripts -->
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+    <!-- page scripts -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
 
-  <!-- page meta -->
-  <meta charset="UTF-8">
-  <meta name="author" content="Shane Drabing">
+    <!-- page meta -->
+    <meta charset="UTF-8">
+    <meta name="author" content="Shane Drabing">
 
-  <!-- page title -->
-  <title>Welcome in... 😎</title>
+    <!-- page title -->
+    <title>Welcome in... 😎</title>
 </head>
 
 <body>
 
-  <!-- for centering -->
-  <div class="container">
+    <!-- the portal! -->
+    <div class="frameB"></div>
+    <div class="frameL"></div>
+    <div class="frameT"></div>
+    <div class="frameR"></div>
 
-    <!-- the portal... :-) -->
-    <a>
-      <div class="doorframe" tabindex="0">
-        <div class="doorL"></div>
-        <div class="doorR"></div>
-      </div>
-    </a>
+    <!-- page content -->
+    <div class="centered">
+
+        <h1>
+            Shane's Place
+        </h1>
+
+        <img class="rounded" src="data/image/unbothered.jpg">
+
+    </div>
 
     <!-- audio player, hidden -->
     <audio id="player" preload="auto">
-      <source src="data/audio/deepnote.mp3">
-      </source>
+        <source src="data/audio/wide_angle.mp3">
+        </source>
     </audio>
 
     <!-- script must load after elements -->
-    <script src="data/js/deepnote.js?v=2.0.2"></script>
-
-  </div>
+    <script src="data/js/portal.js?v=2.0.2"></script>
 
 </body>
 
