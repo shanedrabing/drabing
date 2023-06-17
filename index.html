@@ -11,11 +11,16 @@
     <link rel="icon" href="data/image/icon-192x192.png?v=2.0.4" />
 
     <!-- style sheet -->
-    <link rel="stylesheet" href="data/css/portal.css?v=2.0.4">
     <link rel="stylesheet" href="data/css/index.css?v=2.0.4">
+    <link rel="stylesheet" href="data/css/portal.css?v=2.0.4">
+    <link rel="stylesheet" href="data/css/card.css?v=2.0.4">
+    <link rel="stylesheet" href="data/css/conway.css">
 
-    <!-- page scripts -->
+    <!-- jquery -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+
+    <!-- fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
 
     <!-- page meta -->
     <meta charset="UTF-8">
@@ -25,7 +30,12 @@
     <title>Welcome in... 😎</title>
 </head>
 
+<div id="conway"></div>
+
 <body>
+
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.6.0/lib/p5.js"></script>
+    <script src="data/js/conway.js"></script>
 
     <!-- the portal! -->
     <div class="frameB"></div>
@@ -40,7 +50,22 @@
             Shane's Place
         </h1>
 
-        <img class="rounded" src="data/image/unbothered.jpg">
+        <div class="flip-card">
+            <div class="flip-card-inner">
+                <div class="flip-card-front rounded">
+                    <img class="fitted rounded shadowed" src="data/image/pond_guy.jpg">
+                </div>
+                <div class="flip-card-back rounded">
+                    <ul>
+                        <li>Blog</li>
+                        <li>Biology</li>
+                        <li>Finance</li>
+                        <li>Photos</li>
+                        <li>Finance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
     </div>
 

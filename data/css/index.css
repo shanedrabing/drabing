@@ -9,6 +9,7 @@ body {
     position: fixed;
     width: 100%;
     height: 100%;
+    font-family: "Montserrat", "Courier New", Courier, monospace;
 }
 
 .centered {
@@ -21,7 +22,15 @@ body {
     -webkit-transform: translate(-50%, -50%);
 }
 
+.fitted {
+    width: 100%;
+    height: 100%;
+}
+
 .rounded {
-    width: 50vh;
     border-radius: 2.5em;
+}
+
+.shadowed {
+    box-shadow: 0 0.4em 0.8em 0 rgba(0, 0, 0, 0.2);
 }
