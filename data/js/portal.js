@@ -1,4 +1,4 @@
-opened = function() {    
+opened = function () {
     $("#player")[0].play();
     $(".frameL")[0].setAttribute("id", "opened");
     $(".frameB")[0].setAttribute("id", "opened");
