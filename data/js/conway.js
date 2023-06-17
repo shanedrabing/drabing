@@ -63,14 +63,14 @@ function nihil() {
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
 
-            // lining the edges with 0s
-            if (i == 0 || j == 0 || i == cols - 1 || j == rows - 1) {
-                board[i][j] = 0;
-            } else {
-                // filling the rest randomly
-                board[i][j] = floor(random(2));
-            }
-
+            // // lining the edges with 0s
+            // if (i == 0 || j == 0 || i == cols - 1 || j == rows - 1) {
+            //     board[i][j] = 0;
+            // } else {
+            //     // filling the rest randomly
+            // }
+            
+            board[i][j] = floor(random(2));
             next[i][j] = 0;
         }
     }
@@ -80,14 +80,24 @@ function nihil() {
 function generate() {
 
     // loop through every spot in our 2d array and check spots neighbors
-    for (let x = 1; x < cols - 1; x++) {
-        for (let y = 1; y < rows - 1; y++) {
+    for (let x = 0; x < cols; x++) {
+        for (let y = 0; y < rows; y++) {
 
             // add up all the states in a 3x3 surrounding grid
             let neighbors = 0;
             for (let i = -1; i <= 1; i++) {
+
+                let xi = x + i;
+                if (xi < 0) xi = cols - 1;
+                else if (cols <= xi) xi = 0;
+
                 for (let j = -1; j <= 1; j++) {
-                    neighbors += board[x + i][y + j];
+
+                    let yj = y + j;
+                    if (yj < 0) yj = rows - 1;
+                    else if (rows <= yj) yj = 0;
+
+                    neighbors += board[xi][yj];
                 }
             }
 
