@@ -54,7 +54,14 @@ function draw() {
 
 // reset board when mouse is pressed
 function mousePressed() {
-    nihil();
+    for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+            // mutation
+            if (floor(random(10)) == 0) {
+                board[i][j] = !board[i][j];
+            }
+        }
+    }
 }
 
 // fill board randomly
