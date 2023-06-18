@@ -17,7 +17,7 @@ function setup() {
     canvas.parent("conway");
 
     // calculate cols and rows
-    w = 8;
+    w = 12;
     cols = floor(width / w);
     rows = floor(height / w);
 
