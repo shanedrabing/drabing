@@ -59,17 +59,8 @@ function mousePressed() {
 
 // fill board randomly
 function nihil() {
-
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
-
-            // // lining the edges with 0s
-            // if (i == 0 || j == 0 || i == cols - 1 || j == rows - 1) {
-            //     board[i][j] = 0;
-            // } else {
-            //     // filling the rest randomly
-            // }
-            
             board[i][j] = floor(random(2));
             next[i][j] = 0;
         }
