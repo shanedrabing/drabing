@@ -1,8 +1,8 @@
 # Test Blog Post
 
-By Shane Drabing
-
-2023-08-10
+1. [Test Blog Post](#test-blog-post)
+   1. [Sub-Header](#sub-header)
+   1. [Another Sub header](#another-sub-header)
 
 ## Sub-Header
 
@@ -31,3 +31,11 @@ The blog should be able to handle paragraphs.
 We will find out about $1 + 1 = 2$
 
 $$\text{Hello} \over 100$$
+
+## Another Sub header
+
+How about...
+
+---
+
+Horizontal line?
