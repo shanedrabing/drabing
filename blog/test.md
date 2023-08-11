@@ -1,9 +1,5 @@
 # Test Blog Post
 
-1. [Test Blog Post](#test-blog-post)
-   1. [Sub-Header](#sub-header)
-   1. [Another Sub header](#another-sub-header)
-
 ## Sub-Header
 
 The blog should be able to handle paragraphs.
