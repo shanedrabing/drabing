@@ -4,16 +4,6 @@
     box-sizing: border-box;
 }
 
-.centered {
-    position: absolute;
-    z-index: 1;
-    top: 46.4%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    -webkit-transform: translate(-50%, -50%);
-}
-
 h1, h2 {
     margin-top: 0.75em;
     margin-bottom: 0.5em;
@@ -37,6 +27,16 @@ body {
     margin-right: auto;
     margin-top: 15.45vh;
     /* overflow: hidden; */
+}
+
+.centered {
+    position: absolute;
+    z-index: 1;
+    top: 46.4%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
 }
 
 .indent {
